@@ -4,10 +4,8 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
 
-local HttpService = game:GetService("HttpService")
-
 -- Remove GUIs antigas para evitar duplicação
-for _, name in pairs({"StormdownnHub_Login", "StormdownnHub_Main", "StormdownnHub_Toggle"}) do
+for _, name in pairs({"StormdownnHub_Login", "StormdownnHub_Main", "StormdownnHub_ToggleGui"}) do
     local oldGui = guiParent:FindFirstChild(name)
     if oldGui then oldGui:Destroy() end
 end
@@ -98,6 +96,9 @@ mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 mainFrame.BackgroundTransparency = 0.1
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 14)
 
+mainFrame.Active = true
+mainFrame.Draggable = true
+
 -- Blur image do Aizawa como wallpaper com transparência
 local blurImg = Instance.new("ImageLabel", mainFrame)
 blurImg.Size = UDim2.new(1, 0, 1, 0)
@@ -161,8 +162,12 @@ for i, feature in ipairs(features) do
     btn.Parent = scrollFrame
 end
 
--- Botão flutuante estilo GhostHub (Aizawa)
-local toggleButton = Instance.new("ImageButton", guiParent)
+-- Botão flutuante estilo GhostHub (Aizawa) dentro de ScreenGui próprio
+local toggleGui = Instance.new("ScreenGui", guiParent)
+toggleGui.Name = "StormdownnHub_ToggleGui"
+toggleGui.ResetOnSpawn = false
+
+local toggleButton = Instance.new("ImageButton", toggleGui)
 toggleButton.Name = "StormdownnHub_Toggle"
 toggleButton.Size = UDim2.new(0, 42, 0, 42)
 toggleButton.Position = UDim2.new(0, 12, 0, 12)
