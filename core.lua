@@ -4,19 +4,9 @@
 -- INÍCIO/SENHA
 -- =======
 
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local guiParent = player:WaitForChild("PlayerGui")
-
--- Remove GUIs antigas
-for _, name in pairs({"StormdownnHub_Login"}) do
-    local oldGui = guiParent:FindFirstChild(name)
-    if oldGui then oldGui:Destroy() end
-end
-
-local loginGui = Instance.new("ScreenGui", guiParent)
-loginGui.Name = "StormdownnHub_Login"
-loginGui.ResetOnSpawn = false
+local player = game.Players.LocalPlayer
+local stormdownnHubMain = player:WaitForChild("PlayerGui"):WaitForChild("StormdownnHub_Main")
+stormdownnHubMain.Enabled = true
 
 local loginFrame = Instance.new("Frame", loginGui)
 loginFrame.Size = UDim2.new(0, 320, 0, 180)
