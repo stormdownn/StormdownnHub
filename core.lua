@@ -99,49 +99,86 @@ local guiParent = player:WaitForChild("PlayerGui")
 local oldGui = guiParent:FindFirstChild("StormdownnHub_Main")
 if oldGui then oldGui:Destroy() end
 
--- Criar ScreenGui principal
+-- Criar ScreenGui principal (inicialmente desativado, só ativar depois do login)
 local mainGui = Instance.new("ScreenGui", guiParent)
 mainGui.Name = "StormdownnHub_Main"
 mainGui.ResetOnSpawn = false
-mainGui.Enabled = true
+mainGui.Enabled = false  -- começa desativado
 
--- Frame principal (cor branco)
+-- Frame principal (menor e branco)
 local mainFrame = Instance.new("Frame", mainGui)
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 480, 0, 400)
+mainFrame.Size = UDim2.new(0, 360, 0, 300)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 mainFrame.BackgroundTransparency = 0
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 14)
 
--- Frame secundário preto (exemplo container para conteúdo)
-local blackFrame = Instance.new("Frame", mainFrame)
-blackFrame.Size = UDim2.new(0.95, 0, 0.7, 0)
-blackFrame.Position = UDim2.new(0.025, 0, 0.15, 0)
-blackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-blackFrame.BackgroundTransparency = 0
-Instance.new("UICorner", blackFrame).CornerRadius = UDim.new(0, 10)
+-- Cabeçalho com texto preto
+local headerLabel = Instance.new("TextLabel", mainFrame)
+headerLabel.Size = UDim2.new(1, 0, 0, 50)
+headerLabel.Position = UDim2.new(0, 0, 0, 0)
+headerLabel.BackgroundTransparency = 1
+headerLabel.Text = "STORMDOWNNHUB_V1"
+headerLabel.Font = Enum.Font.GothamBold
+headerLabel.TextSize = 28
+headerLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+headerLabel.TextXAlignment = Enum.TextXAlignment.Center
+headerLabel.TextYAlignment = Enum.TextYAlignment.Center
 
--- Texto de exemplo no container preto
-local exampleText = Instance.new("TextLabel", blackFrame)
-exampleText.Size = UDim2.new(1, 0, 0, 40)
-exampleText.Position = UDim2.new(0, 0, 0, 10)
-exampleText.BackgroundTransparency = 1
-exampleText.Text = "Painel principal do StormdownnHub"
-exampleText.Font = Enum.Font.GothamBold
-exampleText.TextSize = 22
-exampleText.TextColor3 = Color3.new(1,1,1)
-exampleText.TextXAlignment = Enum.TextXAlignment.Center
+-- Frame para os scripts (dentro do painel, ocupa o espaço abaixo do cabeçalho)
+local scriptsFrame = Instance.new("ScrollingFrame", mainFrame)
+scriptsFrame.Size = UDim2.new(1, -20, 1, -60)
+scriptsFrame.Position = UDim2.new(0, 10, 0, 50)
+scriptsFrame.BackgroundTransparency = 1
+scriptsFrame.BorderSizePixel = 0
+scriptsFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scriptsFrame.ScrollBarThickness = 6
+scriptsFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scriptsFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
 
--- Botão flutuante preto (centralizado no topo)
-local toggleButton = Instance.new("TextButton", mainGui)
+local uiLayout = Instance.new("UIListLayout", scriptsFrame)
+uiLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiLayout.Padding = UDim.new(0, 8)
+
+-- Lista de scripts exemplo (botões brancos com texto preto)
+local features = {
+    "Fly", "NoClip", "ESP", "KillPlayers", "WalkFling", "PuxarPlayer",
+    "RingParts", "Magnet", "LagOthers", "Telekinesis"
+}
+
+for i, feature in ipairs(features) do
+    local btn = Instance.new("TextButton")
+    btn.Name = feature .. "_Button"
+    btn.Size = UDim2.new(0.95, 0, 0, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(240, 240, 240) -- branco clarinho
+    btn.TextColor3 = Color3.fromRGB(0, 0, 0) -- texto preto
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 20
+    btn.Text = feature .. ": OFF"
+    btn.LayoutOrder = i
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+    local active = false
+    btn.MouseButton1Click:Connect(function()
+        active = not active
+        btn.Text = feature .. ": " .. (active and "ON" or "OFF")
+        print("[StormdownnHub] Feature toggled:", feature, active)
+        -- Aqui vai a lógica do script
+    end)
+
+    btn.Parent = scriptsFrame
+end
+
+-- Botão flutuante preto no topo central para abrir/fechar painel
+local toggleButton = Instance.new("TextButton", guiParent)
 toggleButton.Name = "ToggleButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- Centralizado topo
+toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-toggleButton.TextColor3 = Color3.new(1,1,1)
-toggleButton.Text = "Fechar"
+toggleButton.TextColor3 = Color3.fromRGB(1, 1, 1)
+toggleButton.Text = "Abrir"
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 18
 toggleButton.AutoButtonColor = false
@@ -150,24 +187,22 @@ toggleButton.ZIndex = 50
 
 local TweenService = game:GetService("TweenService")
 
-local panelOpen = true
+local panelOpen = false -- começa fechado
 
 toggleButton.MouseButton1Click:Connect(function()
     panelOpen = not panelOpen
 
     if panelOpen then
         toggleButton.Text = "Fechar"
-        -- Animação para abrir
+        mainGui.Enabled = true
         mainFrame.Visible = true
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 0})
         tween:Play()
-        tween.Completed:Wait()
     else
         toggleButton.Text = "Abrir"
-        -- Animação para fechar (deixar transparente)
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
         tween:Play()
         tween.Completed:Wait()
-        mainFrame.Visible = false
+        mainGui.Enabled = false
     end
 end)
