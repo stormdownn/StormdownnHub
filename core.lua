@@ -1,9 +1,8 @@
--- StormdownnHub V1 completo
+-- StormdownnHub V1 completo e corrigido
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.Name = "StormdownnHubV1"
@@ -59,7 +58,7 @@ end)
 local scroll = Instance.new("ScrollingFrame", panel)
 scroll.Size = UDim2.new(1, -20, 0.6, 0)
 scroll.Position = UDim2.new(0, 10, 0.1, 0)
-scroll.CanvasSize = UDim2.new(0, 0, 0, 600)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 400)
 scroll.ScrollBarThickness = 6
 scroll.BackgroundTransparency = 1
 scroll.Name = "scriptFrame"
@@ -109,16 +108,57 @@ configFrame.Visible = false
 configFrame.BackgroundColor3 = getBackgroundColor()
 configFrame.BackgroundTransparency = 0.2
 
+-- Criadores e usuário
+local creatorStorm = Instance.new("ImageLabel", configFrame)
+creatorStorm.Size = UDim2.new(0, 50, 0, 50)
+creatorStorm.Position = UDim2.new(0, 20, 0, 10)
+creatorStorm.BackgroundTransparency = 1
+creatorStorm.Image = "rbxassetid://15327849226" -- sua foto
+
+local creatorChatGPT = Instance.new("ImageLabel", configFrame)
+creatorChatGPT.Size = UDim2.new(0, 50, 0, 50)
+creatorChatGPT.Position = UDim2.new(0, 90, 0, 10)
+creatorChatGPT.BackgroundTransparency = 1
+creatorChatGPT.Image = "rbxassetid://17423995385" -- chatgpt
+
+local textCreators = Instance.new("TextLabel", configFrame)
+textCreators.Text = "Criadores: STORMDOWNN, CHATGPT"
+textCreators.Font = Enum.Font.Gotham
+textCreators.TextSize = 16
+textCreators.Position = UDim2.new(0, 20, 0, 70)
+textCreators.Size = UDim2.new(1, -40, 0, 25)
+textCreators.TextColor3 = getTextColor()
+textCreators.BackgroundTransparency = 1
+
+local playerNameLabel = Instance.new("TextLabel", configFrame)
+playerNameLabel.Text = "Usuário: " .. player.Name
+playerNameLabel.Font = Enum.Font.Gotham
+playerNameLabel.TextSize = 16
+playerNameLabel.Position = UDim2.new(0, 20, 0, 105)
+playerNameLabel.Size = UDim2.new(1, -40, 0, 25)
+playerNameLabel.TextColor3 = getTextColor()
+playerNameLabel.BackgroundTransparency = 1
+
+local locationLabel = Instance.new("TextLabel", configFrame)
+locationLabel.Text = "Localização: StormNet v1 (Wi-Fi Detectado)"
+locationLabel.Font = Enum.Font.Gotham
+locationLabel.TextSize = 16
+locationLabel.Position = UDim2.new(0, 20, 0, 140)
+locationLabel.Size = UDim2.new(1, -40, 0, 25)
+locationLabel.TextColor3 = getTextColor()
+locationLabel.BackgroundTransparency = 1
+
 -- Botão alternar tema
 local toggleThemeBtn = Instance.new("TextButton", configFrame)
-toggleThemeBtn.Size = UDim2.new(1, -20, 0, 30)
-toggleThemeBtn.Position = UDim2.new(0, 10, 0, 10)
+toggleThemeBtn.Size = UDim2.new(1, -20, 0, 35)
+toggleThemeBtn.Position = UDim2.new(0, 10, 0, 180)
 toggleThemeBtn.Text = "Alternar Tema Claro/Escuro"
 toggleThemeBtn.BackgroundColor3 = getButtonColor()
 toggleThemeBtn.TextColor3 = getTextColor()
 toggleThemeBtn.BorderSizePixel = 0
 toggleThemeBtn.MouseButton1Click:Connect(function()
     isDarkTheme = not isDarkTheme
+    -- Atualiza cores
     panel.BackgroundColor3 = getBackgroundColor()
     bgImage.ImageTransparency = isDarkTheme and 0.7 or 0.6
     scroll.BackgroundColor3 = getBackgroundColor()
@@ -132,6 +172,10 @@ toggleThemeBtn.MouseButton1Click:Connect(function()
             btn.TextColor3 = getTextColor()
         end
     end
+    -- Atualiza textos
+    textCreators.TextColor3 = getTextColor()
+    playerNameLabel.TextColor3 = getTextColor()
+    locationLabel.TextColor3 = getTextColor()
 end)
 
 -- Mostrar/ocultar configurações e scripts
@@ -162,7 +206,7 @@ local passwordBox = Instance.new("TextBox", loginFrame)
 passwordBox.Size = UDim2.new(0.9, 0, 0, 40)
 passwordBox.Position = UDim2.new(0.05, 0, 0.4, 0)
 passwordBox.PlaceholderText = "Digite a senha..."
-passwordBox.BackgroundColor3 = Color3.fromRGB(200, 200, 200) -- fundo levemente escurecido
+passwordBox.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
 passwordBox.ClearTextOnFocus = false
 passwordBox.Text = ""
 passwordBox.TextColor3 = Color3.new(0, 0, 0)
