@@ -1,26 +1,73 @@
-# 🌩️ StormdownnHub V1
+🌩️ StormdownnHub_V1 🌩️
 
-> Criado por: **Stormdownn** & **ChatGPT**  
-> Interface moderna, personalizada com Aizawa, senha exclusiva, scripts otimizados e muito mais!
+StormdownnHub é um hub de scripts Roblox personalizado com design moderno, tema escuro, animações suaves e funções poderosas para jogadores. Inspirado em hubs como GhostHub e RaelHub, esta versão entrega uma experiência visual e funcional única.
 
----
+🚀 Como usar
 
-## 📦 Funcionalidades
+Cole o seguinte código no seu executador (como Delta ou Fluxus):
 
-- Tela de login com senha (`stormdownn`)
-- Interface moderna com tema tech
-- Painel flutuante com botão para abrir/fechar estilo GhostHub
-- Wallpaper do Aizawa com blur
-- Imagem do criador Stormdownn e ChatGPT
-- Scroll interno para os scripts (não ultrapassa o painel)
-- Botões com scripts exemplo e espaço para adicionar os seus
-- Suporte para futuras versões (StormdownnHub_V2)
-
----
-
-## 🎮 Como usar no executador?
-
-Cole este código no seu executador Roblox (Hydrogen, Delta, etc):
-
-```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/stormdownn/StormdownnHub/main/core.lua"))()
+
+🔐 Login
+
+Senha de acesso: stormdownn
+
+
+✨ Funcionalidades
+
+Tela de login estilizada
+
+Painel principal com imagem de fundo (Aizawa - ID: 15327849226)
+
+Botão flutuante com ícone para abrir/fechar o hub
+
+Interface com blur, cantos arredondados e tema tech escuro
+
+Scroll interno para os botões de script
+
+Código modular preparado para atualizações futuras (StormdownnHub V2)
+
+
+🛠 Scripts disponíveis
+
+RingParts (com intensidade ajustável)
+
+Magnet
+
+LagOthers
+
+Telekinesis
+
+Fly
+
+No-clip
+
+ESP
+
+Kill Players
+
+Walkfling
+
+Puxar player
+
+
+👤 Criadores
+
+ Stormdownn
+
+ ChatGPT
+
+
+🧠 Planejado para
+
+Manutenção simples
+
+Atualizações futuras com StormdownnHub_V2
+
+Compatibilidade com executores móveis (como Delta)
+
+
+
+---
+
+© 2025 Stormdownn. Todos os direitos reservados.
