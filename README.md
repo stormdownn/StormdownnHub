@@ -1,37 +1,30 @@
-# StormdownnHub V1
+# 🌩️ StormdownnHub V1
 
-**StormdownnHub V1** é um hub de scripts para Roblox focado no jogo **Natural Disaster Survival**, com uma interface estilosa baseada no personagem **Aizawa (My Hero Academia)**.
-
----
-
-## 🚀 Recursos do Hub
-
-- Tela de **login com senha** (`stormdownn`)
-- Interface com **imagem de fundo e blur**
-- Botões funcionais com toggle:
-  - Fly
-  - NoClip
-  - ESP
-  - KillPlayers
-  - WalkFling
-  - PuxarPlayer
-  - Emotes R6 / R15
-  - RingParts
-  - Magnet
-  - LagOthers
-  - Telekinesis
-- Tela de **configurações** com:
-  - Criadores: STORMDOWNN, ChatGPT
-  - Nome do jogador
-  - Localização simbólica
-  - Modo tema claro/escuro
-- Interface arrastável e responsiva
+StormdownnHub é um HUB de scripts para Roblox criado por **STORMDOWNN** com design estilizado, interface moderna e funcionalidades poderosas. Este é o repositório da versão **V1**, estruturado para receber atualizações futuras (V2, V3...) com código modular.
 
 ---
 
-## 💻 Como usar no executador
+## 🚀 Funcionalidades
 
-Copie e cole este código no seu executador Roblox (ex: Synapse X, KRNL):
+- 🔐 **Tela de login** com senha personalizada (`stormdownn`)
+- 🖼️ **Visual tech moderno** com blur, cantos arredondados, gradientes e efeito clean
+- 📦 **Painel de scripts com scroll interno** para manter tudo organizado
+- 🔄 **Botão flutuante com imagem do HUB (Aizawa)** que **minimiza/expande** o painel principal (estilo GhostHub/RaelHub)
+- 🌗 **Modo tema claro/escuro** que afeta toda a interface
+- 🌍 **Localização automática via IP (detecção por Wi-Fi)**
+- ⚙️ **Tela de configurações** com:
+  - Criadores (Stormdownn e ChatGPT)
+  - Nome do usuário
+  - Localização
+  - Troca de tema
+- 📁 **Código modular**, pronto para reuso em versões futuras (ex: StormdownnHub_V2)
+
+---
+
+## 📂 Como usar
+
+1. Suba o arquivo `core.lua` neste repositório.
+2. Copie o seguinte comando e cole no seu executador Roblox:
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Stormdownn/StormdownnHub/main/StormdownnHubV1.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Stormdownn/StormdownnHub_V1/main/core.lua"))()
