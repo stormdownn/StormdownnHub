@@ -1,3 +1,77 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Interface principal (será ativada só após login)
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "StormdownnHub"
+gui.ResetOnSpawn = false
+gui.Enabled = false -- só ativa depois do login
+
+-- Tela de Login
+local loginGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+loginGui.Name = "LoginGui"
+loginGui.ResetOnSpawn = false
+
+local loginFrame = Instance.new("Frame", loginGui)
+loginFrame.Size = UDim2.new(0, 300, 0, 180)
+loginFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+loginFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+loginFrame.BorderSizePixel = 0
+Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 12)
+
+local title = Instance.new("TextLabel", loginFrame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Stormdownn Hub Login"
+title.Font = Enum.Font.GothamBold
+title.TextColor3 = Color3.new(1,1,1)
+title.TextSize = 20
+
+local passwordBox = Instance.new("TextBox", loginFrame)
+passwordBox.PlaceholderText = "Senha..."
+passwordBox.Size = UDim2.new(0.9, 0, 0, 40)
+passwordBox.Position = UDim2.new(0.05, 0, 0.45, 0)
+passwordBox.Text = ""
+passwordBox.ClearTextOnFocus = false
+passwordBox.Font = Enum.Font.Gotham
+passwordBox.TextColor3 = Color3.new(1,1,1)
+passwordBox.TextSize = 18
+passwordBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+passwordBox.BorderSizePixel = 0
+Instance.new("UICorner", passwordBox).CornerRadius = UDim.new(0, 8)
+
+local loginButton = Instance.new("TextButton", loginFrame)
+loginButton.Size = UDim2.new(0.9, 0, 0, 35)
+loginButton.Position = UDim2.new(0.05, 0, 0.75, 0)
+loginButton.Text = "Entrar"
+loginButton.Font = Enum.Font.GothamBold
+loginButton.TextSize = 18
+loginButton.TextColor3 = Color3.new(1,1,1)
+loginButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+loginButton.BorderSizePixel = 0
+Instance.new("UICorner", loginButton).CornerRadius = UDim.new(0, 8)
+
+local incorrectLabel = Instance.new("TextLabel", loginFrame)
+incorrectLabel.Size = UDim2.new(1, 0, 0, 20)
+incorrectLabel.Position = UDim2.new(0, 0, 1, -20)
+incorrectLabel.BackgroundTransparency = 1
+incorrectLabel.Text = ""
+incorrectLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
+incorrectLabel.Font = Enum.Font.Gotham
+incorrectLabel.TextSize = 14
+
+-- Lógica do login
+loginButton.MouseButton1Click:Connect(function()
+    local senha = passwordBox.Text
+    if senha == "stormdownn" then
+        loginGui:Destroy()
+        gui.Enabled = true -- ativa o hub principal
+    else
+        incorrectLabel.Text = "Senha incorreta!"
+    end
+end)
+
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "StormdownnHub"
 gui.ResetOnSpawn = false
