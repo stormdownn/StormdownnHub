@@ -1,244 +1,397 @@
--- StormdownnHub V1 completo e corrigido
+-- StormdownnHub V1 - core.lua
+-- Criado por Stormdownn e ChatGPT
 
 local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local Lighting = game:GetService("Lighting")
 local player = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
 
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "StormdownnHubV1"
-screenGui.ResetOnSpawn = false
-
--- Tema e cores
+-- Configurações básicas
+local PASSWORD = "stormdownn"
 local isDarkTheme = false
-local function getBackgroundColor()
-    return isDarkTheme and Color3.fromRGB(25,25,25) or Color3.fromRGB(245,245,245)
+local panelVisible = true
+
+-- Função para criar UI arredondado
+local function createUICorner(parent, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, radius)
+    corner.Parent = parent
+    return corner
 end
-local function getTextColor()
-    return isDarkTheme and Color3.new(1,1,1) or Color3.new(0,0,0)
+
+-- Função para aplicar tema (claro/escuro)
+local function applyTheme(gui)
+    local bgColor, textColor, inputBg, buttonBg
+    if isDarkTheme then
+        bgColor = Color3.fromRGB(30, 30, 30)
+        textColor = Color3.new(1,1,1)
+        inputBg = Color3.fromRGB(50,50,50)
+        buttonBg = Color3.fromRGB(70,70,70)
+    else
+        bgColor = Color3.fromRGB(240, 240, 240)
+        textColor = Color3.fromRGB(20, 20, 20)
+        inputBg = Color3.fromRGB(230,230,230)
+        buttonBg = Color3.fromRGB(200,200,200)
+    end
+
+    for _, obj in pairs(gui:GetDescendants()) do
+        if obj:IsA("Frame") then
+            obj.BackgroundColor3 = bgColor
+        elseif obj:IsA("TextLabel") or obj:IsA("TextButton") then
+            obj.TextColor3 = textColor
+            if obj:IsA("TextButton") then
+                obj.BackgroundColor3 = buttonBg
+            end
+        elseif obj:IsA("TextBox") then
+            obj.BackgroundColor3 = inputBg
+            obj.TextColor3 = textColor
+        end
+    end
 end
-local function getButtonColor()
-    return isDarkTheme and Color3.fromRGB(50,50,50) or Color3.fromRGB(220,220,220)
+
+-- Aplica blur no Lighting
+local function applyBlur()
+    local blur = Lighting:FindFirstChild("StormdownnHubBlur")
+    if not blur then
+        blur = Instance.new("BlurEffect")
+        blur.Name = "StormdownnHubBlur"
+        blur.Size = 15
+        blur.Parent = Lighting
+    end
 end
 
--- Painel principal
-local panel = Instance.new("Frame")
-panel.Name = "MainPanel"
-panel.Parent = screenGui
-panel.Size = UDim2.new(0, 400, 0, 350)
-panel.Position = UDim2.new(0.5, -200, 0.5, -175)
-panel.BackgroundColor3 = getBackgroundColor()
-panel.BorderSizePixel = 0
-panel.BackgroundTransparency = 0.1
-panel.Active = true
-panel.Draggable = true
+local function removeBlur()
+    local blur = Lighting:FindFirstChild("StormdownnHubBlur")
+    if blur then blur:Destroy() end
+end
 
--- Fundo Aizawa
-local bgImage = Instance.new("ImageLabel", panel)
-bgImage.Size = UDim2.new(1, 0, 1, 0)
-bgImage.Position = UDim2.new(0, 0, 0, 0)
-bgImage.Image = "rbxassetid://15327849226"
-bgImage.BackgroundTransparency = 1
-bgImage.ImageTransparency = 0.6
+-- Limpa guis antigos
+local function cleanup()
+    local gui = player:FindFirstChild("PlayerGui")
+    if gui then
+        if gui:FindFirstChild("StormdownnHub_Login") then
+            gui.StormdownnHub_Login:Destroy()
+        end
+        if gui:FindFirstChild("StormdownnHub_Main") then
+            gui.StormdownnHub_Main:Destroy()
+        end
+    end
+    removeBlur()
+end
 
--- Botão flutuante (ícone do hub)
-local floatButton = Instance.new("ImageButton", screenGui)
-floatButton.Size = UDim2.new(0, 50, 0, 50)
-floatButton.Position = UDim2.new(0, 10, 0.5, -25)
-floatButton.Image = "rbxassetid://15327849226"
-floatButton.BackgroundTransparency = 1
-floatButton.Draggable = true
+-- Cria a tela de login
+local function createLogin()
+    cleanup()
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "StormdownnHub_Login"
+    gui.ResetOnSpawn = false
+    gui.Parent = player:WaitForChild("PlayerGui")
 
-local panelOpen = true
-floatButton.MouseButton1Click:Connect(function()
-    panelOpen = not panelOpen
-    panel.Visible = panelOpen
-end)
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 320, 0, 220)
+    frame.Position = UDim2.new(0.5, -160, 0.5, -110)
+    frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    frame.Active = true
+    frame.Draggable = true
+    frame.Parent = gui
+    createUICorner(frame, 12)
 
--- Scroll para scripts
-local scroll = Instance.new("ScrollingFrame", panel)
-scroll.Size = UDim2.new(1, -20, 0.6, 0)
-scroll.Position = UDim2.new(0, 10, 0.1, 0)
-scroll.CanvasSize = UDim2.new(0, 0, 0, 400)
-scroll.ScrollBarThickness = 6
-scroll.BackgroundTransparency = 1
-scroll.Name = "scriptFrame"
+    local title = Instance.new("TextLabel")
+    title.Text = "StormdownnHub Login"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 24
+    title.Size = UDim2.new(1,0,0,50)
+    title.BackgroundTransparency = 1
+    title.TextColor3 = Color3.new(1,1,1)
+    title.Parent = frame
 
-local function createScriptButton(name)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, 30)
-    btn.Text = name .. ": OFF"
-    btn.Parent = scroll
-    btn.BackgroundColor3 = getButtonColor()
-    btn.TextColor3 = getTextColor()
-    btn.BorderSizePixel = 0
-    btn.Active = true
+    local input = Instance.new("TextBox")
+    input.PlaceholderText = "Digite a senha..."
+    input.Font = Enum.Font.Gotham
+    input.TextSize = 18
+    input.Size = UDim2.new(0.85, 0, 0, 45)
+    input.Position = UDim2.new(0.075, 0, 0.45, 0)
+    input.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    input.TextColor3 = Color3.new(1,1,1)
+    input.ClearTextOnFocus = false
+    input.Parent = frame
+    createUICorner(input, 8)
 
-    local active = false
-    btn.MouseButton1Click:Connect(function()
-        active = not active
-        btn.Text = name .. ": " .. (active and "ON" or "OFF")
-        -- Aqui você pode adicionar a função real do script que o botão controla
-        print(name .. " toggled:", active)
+    local overlay = Instance.new("Frame") -- escurece a área do input
+    overlay.Size = input.Size
+    overlay.Position = input.Position
+    overlay.BackgroundColor3 = Color3.fromRGB(0,0,0)
+    overlay.BackgroundTransparency = 0.4
+    overlay.ZIndex = 1
+    overlay.Parent = frame
+
+    input.ZIndex = 2
+
+    local button = Instance.new("TextButton")
+    button.Text = "Entrar"
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 20
+    button.Size = UDim2.new(0.5, 0, 0, 40)
+    button.Position = UDim2.new(0.25, 0, 0.75, 0)
+    button.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    button.TextColor3 = Color3.new(1,1,1)
+    button.Parent = frame
+    createUICorner(button, 8)
+
+    button.MouseButton1Click:Connect(function()
+        if input.Text == PASSWORD then
+            gui:Destroy()
+            loadMainHub()
+        else
+            button.Text = "Senha incorreta!"
+            wait(1.2)
+            button.Text = "Entrar"
+        end
     end)
 end
 
-local features = {
-    "RingParts", "Magnet", "LagOthers", "Kill Players", "WalkFling",
-    "Puxar Player", "Telekinesis", "ESP", "Fly", "No-Clip"
-}
+-- Cria botão flutuante para abrir/fechar o painel principal
+local function createToggleButton(mainFrame)
+    local gui = player:WaitForChild("PlayerGui")
+    local button = gui:FindFirstChild("StormdownnHub_Toggle")
+    if button then button:Destroy() end
 
-for _, feature in ipairs(features) do
-    createScriptButton(feature)
+    button = Instance.new("TextButton")
+    button.Name = "StormdownnHub_Toggle"
+    button.Text = "" -- No text, we will put an image
+    button.Size = UDim2.new(0, 48, 0, 48)
+    button.Position = UDim2.new(0, 10, 0, 10)
+    button.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    button.AutoButtonColor = false
+    button.Parent = gui
+    createUICorner(button, 24)
+    button.ZIndex = 10
+
+    -- Imagem do ícone do hub (adicione seu assetId)
+    local img = Instance.new("ImageLabel")
+    img.Name = "Icon"
+    img.Size = UDim2.new(1,0,1,0)
+    img.Image = "rbxassetid://15327849226" -- Aizawa como ícone
+    img.BackgroundTransparency = 1
+    img.Parent = button
+
+    -- Drag para mover o botão quando o painel estiver fechado
+    local dragging = false
+    local dragInput, dragStart, startPos
+
+    button.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = button.Position
+        end
+    end)
+    button.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input == dragInput then
+            local delta = input.Position - dragStart
+            local newPos = UDim2.new(
+                math.clamp(startPos.X.Scale, 0, 1),
+                math.clamp(startPos.X.Offset + delta.X, 0, workspace.CurrentCamera.ViewportSize.X - button.AbsoluteSize.X),
+                math.clamp(startPos.Y.Scale, 0, 1),
+                math.clamp(startPos.Y.Offset + delta.Y, 0, workspace.CurrentCamera.ViewportSize.Y - button.AbsoluteSize.Y)
+            )
+            button.Position = newPos
+        end
+    end)
+    button.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    -- Toggle painel principal
+    button.MouseButton1Click:Connect(function()
+        panelVisible = not panelVisible
+        mainFrame.Visible = panelVisible
+        if panelVisible then
+            button.Position = UDim2.new(0, 10, 0, 10) -- Volta pro canto fixo quando aberto
+        end
+    end)
 end
 
--- Botão de configurações
-local configBtn = Instance.new("TextButton", panel)
-configBtn.Size = UDim2.new(0, 40, 0, 40)
-configBtn.Position = UDim2.new(1, -50, 0, 10)
-configBtn.Text = "⚙️"
-configBtn.BackgroundTransparency = 0.2
-configBtn.BorderSizePixel = 0
-configBtn.TextScaled = true
+-- Função para buscar avatar do player pelo UserId
+local function getAvatarUrl(userId)
+    return "https://www.roblox.com/headshot-thumbnail/image?userId="..userId.."&width=150&height=150&format=png"
+end
 
--- Frame configurações
-local configFrame = Instance.new("Frame", panel)
-configFrame.Size = UDim2.new(1, -20, 0.6, 0)
-configFrame.Position = scroll.Position
-configFrame.Visible = false
-configFrame.BackgroundColor3 = getBackgroundColor()
-configFrame.BackgroundTransparency = 0.2
+-- Função para calcular idade da conta em dias
+local function getAccountAgeDays(createdDate)
+    local diff = os.time() - os.time(createdDate)
+    return math.floor(diff / (60*60*24))
+end
 
--- Criadores e usuário
-local creatorStorm = Instance.new("ImageLabel", configFrame)
-creatorStorm.Size = UDim2.new(0, 50, 0, 50)
-creatorStorm.Position = UDim2.new(0, 20, 0, 10)
-creatorStorm.BackgroundTransparency = 1
-creatorStorm.Image = "rbxassetid://15327849226" -- sua foto
-
-local creatorChatGPT = Instance.new("ImageLabel", configFrame)
-creatorChatGPT.Size = UDim2.new(0, 50, 0, 50)
-creatorChatGPT.Position = UDim2.new(0, 90, 0, 10)
-creatorChatGPT.BackgroundTransparency = 1
-creatorChatGPT.Image = "rbxassetid://17423995385" -- chatgpt
-
-local textCreators = Instance.new("TextLabel", configFrame)
-textCreators.Text = "Criadores: STORMDOWNN, CHATGPT"
-textCreators.Font = Enum.Font.Gotham
-textCreators.TextSize = 16
-textCreators.Position = UDim2.new(0, 20, 0, 70)
-textCreators.Size = UDim2.new(1, -40, 0, 25)
-textCreators.TextColor3 = getTextColor()
-textCreators.BackgroundTransparency = 1
-
-local playerNameLabel = Instance.new("TextLabel", configFrame)
-playerNameLabel.Text = "Usuário: " .. player.Name
-playerNameLabel.Font = Enum.Font.Gotham
-playerNameLabel.TextSize = 16
-playerNameLabel.Position = UDim2.new(0, 20, 0, 105)
-playerNameLabel.Size = UDim2.new(1, -40, 0, 25)
-playerNameLabel.TextColor3 = getTextColor()
-playerNameLabel.BackgroundTransparency = 1
-
-local locationLabel = Instance.new("TextLabel", configFrame)
-locationLabel.Text = "Localização: StormNet v1 (Wi-Fi Detectado)"
-locationLabel.Font = Enum.Font.Gotham
-locationLabel.TextSize = 16
-locationLabel.Position = UDim2.new(0, 20, 0, 140)
-locationLabel.Size = UDim2.new(1, -40, 0, 25)
-locationLabel.TextColor3 = getTextColor()
-locationLabel.BackgroundTransparency = 1
-
--- Botão alternar tema
-local toggleThemeBtn = Instance.new("TextButton", configFrame)
-toggleThemeBtn.Size = UDim2.new(1, -20, 0, 35)
-toggleThemeBtn.Position = UDim2.new(0, 10, 0, 180)
-toggleThemeBtn.Text = "Alternar Tema Claro/Escuro"
-toggleThemeBtn.BackgroundColor3 = getButtonColor()
-toggleThemeBtn.TextColor3 = getTextColor()
-toggleThemeBtn.BorderSizePixel = 0
-toggleThemeBtn.MouseButton1Click:Connect(function()
-    isDarkTheme = not isDarkTheme
-    -- Atualiza cores
-    panel.BackgroundColor3 = getBackgroundColor()
-    bgImage.ImageTransparency = isDarkTheme and 0.7 or 0.6
-    scroll.BackgroundColor3 = getBackgroundColor()
-    configFrame.BackgroundColor3 = getBackgroundColor()
-    toggleThemeBtn.BackgroundColor3 = getButtonColor()
-    toggleThemeBtn.TextColor3 = getTextColor()
-    configBtn.BackgroundTransparency = isDarkTheme and 0 or 0.2
-    for _, btn in pairs(scroll:GetChildren()) do
-        if btn:IsA("TextButton") then
-            btn.BackgroundColor3 = getButtonColor()
-            btn.TextColor3 = getTextColor()
-        end
-    end
-    -- Atualiza textos
-    textCreators.TextColor3 = getTextColor()
-    playerNameLabel.TextColor3 = getTextColor()
-    locationLabel.TextColor3 = getTextColor()
-end)
-
--- Mostrar/ocultar configurações e scripts
-configBtn.MouseButton1Click:Connect(function()
-    local visible = not configFrame.Visible
-    configFrame.Visible = visible
-    scroll.Visible = not visible
-end)
-
--- Tela de Login
-local loginFrame = Instance.new("Frame", screenGui)
-loginFrame.Size = UDim2.new(0, 300, 0, 170)
-loginFrame.Position = UDim2.new(0.5, -150, 0.5, -85)
-loginFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
-loginFrame.BorderSizePixel = 0
-loginFrame.Active = true
-loginFrame.Draggable = true
-
-local loginTitle = Instance.new("TextLabel", loginFrame)
-loginTitle.Text = "StormdownnHub Login"
-loginTitle.Font = Enum.Font.GothamBold
-loginTitle.TextSize = 24
-loginTitle.Size = UDim2.new(1, 0, 0, 40)
-loginTitle.TextColor3 = Color3.new(0, 0, 0)
-loginTitle.BackgroundTransparency = 1
-
-local passwordBox = Instance.new("TextBox", loginFrame)
-passwordBox.Size = UDim2.new(0.9, 0, 0, 40)
-passwordBox.Position = UDim2.new(0.05, 0, 0.4, 0)
-passwordBox.PlaceholderText = "Digite a senha..."
-passwordBox.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-passwordBox.ClearTextOnFocus = false
-passwordBox.Text = ""
-passwordBox.TextColor3 = Color3.new(0, 0, 0)
-passwordBox.Font = Enum.Font.Gotham
-passwordBox.TextSize = 20
-passwordBox.ClipsDescendants = true
-passwordBox.TextTransparency = 0
-
-local enterButton = Instance.new("TextButton", loginFrame)
-enterButton.Size = UDim2.new(0.5, 0, 0, 40)
-enterButton.Position = UDim2.new(0.25, 0, 0.75, 0)
-enterButton.Text = "Entrar"
-enterButton.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
-enterButton.TextColor3 = Color3.new(0, 0, 0)
-enterButton.Font = Enum.Font.GothamBold
-enterButton.TextSize = 18
-enterButton.AutoButtonColor = true
-
-enterButton.MouseButton1Click:Connect(function()
-    if passwordBox.Text == "stormdownn" then
-        loginFrame:Destroy()
-        panel.Visible = true
-        floatButton.Visible = true
+-- Função para pegar localização via IP (API gratuita)
+local function getLocation()
+    local success, response = pcall(function()
+        return HttpService:GetAsync("https://ipapi.co/json/")
+    end)
+    if success then
+        local data = HttpService:JSONDecode(response)
+        return data -- retorna um objeto com cidade, região, país, continente, ip etc
     else
-        passwordBox.Text = ""
-        passwordBox.PlaceholderText = "Senha incorreta!"
-        enterButton.Text = "Tente novamente"
-        wait(1.5)
-        enterButton.Text = "Entrar"
-        passwordBox.PlaceholderText = "Digite a senha..."
+        return nil
     end
-end)
+end
 
-panel.Visible = false
-floatButton.Visible = false
+-- Função que cria a aba configurações (3 seções)
+local function createSettings(mainFrame)
+    local gui = player:WaitForChild("PlayerGui")
+    local existingSettings = gui:FindFirstChild("StormdownnHub_Settings")
+    if existingSettings then existingSettings:Destroy() end
+
+    local settingsFrame = Instance.new("Frame")
+    settingsFrame.Name = "StormdownnHub_Settings"
+    settingsFrame.Size = UDim2.new(0, 460, 0, 320)
+    settingsFrame.Position = UDim2.new(1, 10, 0, 40) -- Fica ao lado direito do painel principal
+    settingsFrame.BackgroundColor3 = isDarkTheme and Color3.fromRGB(30,30,30) or Color3.fromRGB(240,240,240)
+    settingsFrame.BorderSizePixel = 0
+    settingsFrame.Parent = gui
+    createUICorner(settingsFrame, 12)
+    settingsFrame.Visible = false
+    settingsFrame.Active = true
+    settingsFrame.Draggable = true
+
+    -- Título
+    local title = Instance.new("TextLabel")
+    title.Text = "Configurações"
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 22
+    title.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    title.Size = UDim2.new(1, 0, 0, 45)
+    title.BackgroundTransparency = 1
+    title.Parent = settingsFrame
+
+    -- Separador horizontal
+    local separator = Instance.new("Frame")
+    separator.Size = UDim2.new(1, -20, 0, 2)
+    separator.Position = UDim2.new(0, 10, 0, 48)
+    separator.BackgroundColor3 = isDarkTheme and Color3.fromRGB(60,60,60) or Color3.fromRGB(200,200,200)
+    separator.Parent = settingsFrame
+
+    -- Container das seções
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(1, -20, 1, -60)
+    container.Position = UDim2.new(0, 10, 0, 55)
+    container.BackgroundTransparency = 1
+    container.Parent = settingsFrame
+
+    -- Layout vertical
+    local layout = Instance.new("UIListLayout")
+    layout.Parent = container
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 12)
+
+    -- ==================== 1. Player ====================
+    local playerSection = Instance.new("Frame")
+    playerSection.Size = UDim2.new(1, 0, 0, 140)
+    playerSection.BackgroundTransparency = 1
+    playerSection.Parent = container
+
+    -- Welcome e avatar
+    local welcomeLabel = Instance.new("TextLabel")
+    welcomeLabel.Text = "Welcome, "..player.Name
+    welcomeLabel.Font = Enum.Font.GothamBold
+    welcomeLabel.TextSize = 20
+    welcomeLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    welcomeLabel.BackgroundTransparency = 1
+    welcomeLabel.Size = UDim2.new(1, 0, 0, 30)
+    welcomeLabel.Parent = playerSection
+
+    local avatarImg = Instance.new("ImageLabel")
+    avatarImg.Size = UDim2.new(0, 70, 0, 70)
+    avatarImg.Position = UDim2.new(0, 0, 0, 35)
+    avatarImg.BackgroundTransparency = 1
+    avatarImg.Image = getAvatarUrl(player.UserId)
+    avatarImg.Parent = playerSection
+
+    -- ID do usuário
+    local idLabel = Instance.new("TextLabel")
+    idLabel.Text = "ID do usuário: "..player.UserId
+    idLabel.Font = Enum.Font.Gotham
+    idLabel.TextSize = 16
+    idLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    idLabel.BackgroundTransparency = 1
+    idLabel.Position = UDim2.new(0, 80, 0, 35)
+    idLabel.Size = UDim2.new(1, -80, 0, 25)
+    idLabel.Parent = playerSection
+
+    -- Idade da conta (precisa buscar via API do Roblox, mas aqui usamos placeholder)
+    local accountAgeLabel = Instance.new("TextLabel")
+    accountAgeLabel.Text = "Idade da conta: 693 dias"
+    accountAgeLabel.Font = Enum.Font.Gotham
+    accountAgeLabel.TextSize = 16
+    accountAgeLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    accountAgeLabel.BackgroundTransparency = 1
+    accountAgeLabel.Position = UDim2.new(0, 80, 0, 60)
+    accountAgeLabel.Size = UDim2.new(1, -80, 0, 25)
+    accountAgeLabel.Parent = playerSection
+
+    -- Localização e IP (serão preenchidos após pegar dados da API)
+    local ipLabel = Instance.new("TextLabel")
+    ipLabel.Text = "Endereço IP: Carregando..."
+    ipLabel.Font = Enum.Font.Gotham
+    ipLabel.TextSize = 16
+    ipLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    ipLabel.BackgroundTransparency = 1
+    ipLabel.Position = UDim2.new(0, 80, 0, 85)
+    ipLabel.Size = UDim2.new(1, -80, 0, 20)
+    ipLabel.Parent = playerSection
+
+    local locationLabel = Instance.new("TextLabel")
+    locationLabel.Text = "Localização: Carregando..."
+    locationLabel.Font = Enum.Font.Gotham
+    locationLabel.TextSize = 16
+    locationLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    locationLabel.BackgroundTransparency = 1
+    locationLabel.Position = UDim2.new(0, 80, 0, 105)
+    locationLabel.Size = UDim2.new(1, -80, 0, 30)
+    locationLabel.TextWrapped = true
+    locationLabel.Parent = playerSection
+
+    -- Requisição para pegar IP e localização
+    spawn(function()
+        local data = getLocation()
+        if data then
+            ipLabel.Text = "Endereço IP: "..(data.ip or "N/A")
+            locationLabel.Text = ("Localização: %s, %s, %s, %s, %s"):format(
+                data.continent_name or "N/A",
+                data.region or "N/A",
+                data.city or "N/A",
+                data.country_name or "N/A",
+                data.postal or "N/A"
+            )
+        else
+            ipLabel.Text = "Endereço IP: Erro ao carregar"
+            locationLabel.Text = "Localização: Erro ao carregar"
+        end
+    end)
+
+    -- ==================== 2. Troca de Tema ====================
+    local themeSection = Instance.new("Frame")
+    themeSection.Size = UDim2.new(1, 0, 0, 60)
+    themeSection.BackgroundTransparency = 1
+    themeSection.Parent = container
+
+    local themeLabel = Instance.new("TextLabel")
+    themeLabel.Text = "Troca de Tema"
+    themeLabel.Font = Enum.Font.GothamBold
+    themeLabel.TextSize = 18
+    themeLabel.TextColor3 = isDarkTheme and Color3.new(1,1,1) or Color3.fromRGB(20,20,20)
+    themeLabel.BackgroundTransparency = 1
+    themeLabel.Size = UDim2.new(1, 0, 0, 30)
+    themeLabel.Parent = themeSection
+
+    local themeButton = Instance.new("TextButton")
+    themeButton.Text = isDarkTheme and "Modo Claro" or "Modo Escuro"
+    themeButton.Font = Enum.Font.Gotham
+    themeButton
