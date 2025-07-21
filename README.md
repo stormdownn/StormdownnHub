@@ -1,29 +1,26 @@
 # 🌩️ StormdownnHub V1
 
-**StormdownnHub** é um HUB personalizado para Roblox com foco em uma interface moderna, funcional e estilizada, inspirada em hubs como GhostHub e RaelHub, com tema do personagem Aizawa (My Hero Academia).
+> Criado por: **Stormdownn** & **ChatGPT**  
+> Interface moderna, personalizada com Aizawa, senha exclusiva, scripts otimizados e muito mais!
 
 ---
 
-## Funcionalidades
+## 📦 Funcionalidades
 
-- Tela de login com senha protegida (`stormdownn`)
-- Interface principal com botões toggle para várias funções (Fly, NoClip, ESP, KillPlayers, WalkFling, PuxarPlayer, Emotes R6/R15, RingParts, Magnet, LagOthers, Telekinesis)
-- Botão flutuante para abrir e fechar a interface principal, estilo GhostHub/RaelHub
-- Scroll interno para os botões de scripts, mantendo tudo organizado dentro do painel
-- Tela de configurações com:
-  - Fotos dos criadores (Stormdownn e ChatGPT)
-  - Nome do usuário atual
-  - Localização simulada ("StormNet v1 - Wi-Fi Detectado")
-  - Alternância entre tema claro e escuro
-- Fundo com imagem estilizada do Aizawa com efeito blur no ambiente
-- Código modular para facilitar futuras atualizações (como StormdownnHub_V2)
-- Sem sons para uma experiência silenciosa e focada
+- Tela de login com senha (`stormdownn`)
+- Interface moderna com tema tech
+- Painel flutuante com botão para abrir/fechar estilo GhostHub
+- Wallpaper do Aizawa com blur
+- Imagem do criador Stormdownn e ChatGPT
+- Scroll interno para os scripts (não ultrapassa o painel)
+- Botões com scripts exemplo e espaço para adicionar os seus
+- Suporte para futuras versões (StormdownnHub_V2)
 
 ---
 
-## Como usar
+## 🎮 Como usar no executador?
 
-1. Clone o repositório:
+Cole este código no seu executador Roblox (Hydrogen, Delta, etc):
 
-```bash
-git clone https://github.com/stormdownn/
+```lua
+loadstring(game:HttpGet("https://raw.githubusercontent.com/stormdownn/StormdownnHub/main/core.lua"))()
