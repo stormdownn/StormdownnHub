@@ -91,42 +91,37 @@ end)
 
 -- Main frame do Hub
 
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local guiParent = player:WaitForChild("PlayerGui")
+
+-- Criar GUI principal
 local mainGui = Instance.new("ScreenGui", guiParent)
 mainGui.Name = "StormdownnHub_Main"
 mainGui.ResetOnSpawn = false
 mainGui.Enabled = false
 
+-- Frame principal (hub)
 local mainFrame = Instance.new("Frame", mainGui)
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 480, 0, 400)
-mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0) -- centralizado
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Cor principal branco
-mainFrame.BackgroundTransparency = 0.1
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- branco
+mainFrame.BackgroundTransparency = 0
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 14)
 
--- Imagem de fundo (blur) do Aizawa
-local blurImg = Instance.new("ImageLabel", mainFrame)
-blurImg.Size = UDim2.new(1, 0, 1, 0)
-blurImg.Position = UDim2.new(0, 0, 0, 0)
-blurImg.BackgroundTransparency = 1
-blurImg.Image = "rbxassetid://15327849226" -- Aizawa
-blurImg.ImageTransparency = 0.8
-blurImg.ScaleType = Enum.ScaleType.Crop
-blurImg.ZIndex = 0
-
--- Frame que conterá os scripts, com fundo levemente escuro para destaque
+-- Container dos scripts
 local scriptsFrame = Instance.new("Frame", mainFrame)
 scriptsFrame.Name = "ScriptsFrame"
 scriptsFrame.Size = UDim2.new(0.95, 0, 0.6, 0)
 scriptsFrame.Position = UDim2.new(0.025, 0, 0.22, 0)
-scriptsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- fundo preto para destaque
-scriptsFrame.BackgroundTransparency = 0.6 -- levemente transparente
+scriptsFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- lacuna escura para destaque
+scriptsFrame.BackgroundTransparency = 0.6
 scriptsFrame.BorderSizePixel = 0
 scriptsFrame.ClipsDescendants = true
 Instance.new("UICorner", scriptsFrame).CornerRadius = UDim.new(0, 10)
 
--- Scrolling frame dentro do container dos scripts
 local scrollFrame = Instance.new("ScrollingFrame", scriptsFrame)
 scrollFrame.Size = UDim2.new(1, 0, 1, 0)
 scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -140,17 +135,17 @@ local uiLayout = Instance.new("UIListLayout", scrollFrame)
 uiLayout.SortOrder = Enum.SortOrder.LayoutOrder
 uiLayout.Padding = UDim.new(0, 6)
 
--- Lista dos scripts/features
 local features = {
-    "Fly", "NoClip", "ESP", "KillPlayers", "WalkFling", "PuxarPlayer",
-    "RingParts", "Magnet", "LagOthers", "Telekinesis"
+    "Fly", "NoClip", "ESP", "KillPlayers", "WalkFling",
+    "PuxarPlayer", "RingParts", "Magnet", "LagOthers", "Telekinesis"
 }
 
 for i, feature in ipairs(features) do
     local btn = Instance.new("TextButton")
     btn.Name = feature .. "_Button"
     btn.Size = UDim2.new(0.95, 0, 0, 38)
-    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- cor secundária preta
+    btn.Position = UDim2.new(0, 0, 0, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35) -- fundo mais escuro pra botão
     btn.TextColor3 = Color3.new(1, 1, 1)
     btn.Font = Enum.Font.GothamBold
     btn.TextSize = 18
@@ -169,50 +164,42 @@ for i, feature in ipairs(features) do
     btn.Parent = scrollFrame
 end
 
--- Botão flutuante estilo GhostHub, centralizado no topo da tela
+-- Botão flutuante (centralizado no topo do mainFrame)
 local toggleButton = Instance.new("ImageButton", guiParent)
 toggleButton.Name = "StormdownnHub_Toggle"
-toggleButton.Size = UDim2.new(0, 48, 0, 48)
-toggleButton.Position = UDim2.new(0.5, -24, 0, 12) -- centralizado horizontal, topo com 12px
-toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- cor principal branca
-toggleButton.BackgroundTransparency = 0.15
+toggleButton.Size = UDim2.new(0, 42, 0, 42)
+toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+toggleButton.Position = UDim2.new(0.5, 0, 0, 12) -- topo e centralizado horizontalmente na tela
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.BackgroundTransparency = 0.2
 toggleButton.AutoButtonColor = false
 toggleButton.Image = "rbxassetid://15327849226" -- Aizawa
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
 toggleButton.ZIndex = 20
 
--- TweenService para animações
 local TweenService = game:GetService("TweenService")
-local panelOpen = true
 
--- Função para abrir painel com animação (fade + slide)
-local function openPanel()
-    mainFrame.Visible = true
-    local goal = {Position = UDim2.new(0.5, -240, 0.5, -200), BackgroundTransparency = 0.1}
-    TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quint), goal):Play()
-end
+local panelOpen = false
 
--- Função para fechar painel com animação (fade + slide para cima)
-local function closePanel()
-    local goal = {Position = UDim2.new(0.5, -240, 0, -mainFrame.Size.Y.Offset), BackgroundTransparency = 1}
-    local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quint), goal)
-    tween:Play()
-    tween.Completed:Connect(function()
-        mainFrame.Visible = false
-    end)
-end
-
--- Inicialização
-mainFrame.Position = UDim2.new(0.5, -240, 0.5, -200)
-mainFrame.BackgroundTransparency = 0.1
-mainFrame.Visible = true
-
--- Evento do botão para abrir/fechar painel com animação
-toggleButton.MouseButton1Click:Connect(function()
-    if panelOpen then
-        closePanel()
-    else
-        openPanel()
-    end
+local function togglePanel()
     panelOpen = not panelOpen
-end)
+    if panelOpen then
+        mainGui.Enabled = true
+        -- Animação abrir
+        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0})
+        tween:Play()
+    else
+        -- Animação fechar
+        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {Position = UDim2.new(0.5, 0, -1, 0), BackgroundTransparency = 1})
+        tween:Play()
+        tween.Completed:Wait()
+        mainGui.Enabled = false
+    end
+end
+
+toggleButton.MouseButton1Click:Connect(togglePanel)
+
+-- Começa com painel fechado e só botão visível
+mainGui.Enabled = false
+mainFrame.Position = UDim2.new(0.5, 0, -1, 0) -- fora da tela no topo
+mainFrame.BackgroundTransparency = 1
