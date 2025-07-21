@@ -90,6 +90,12 @@ end)
 -- =======
 
 -- Main frame do Hub
+
+local mainGui = Instance.new("ScreenGui", guiParent)
+mainGui.Name = "StormdownnHub_Main"
+mainGui.ResetOnSpawn = false
+mainGui.Enabled = false
+
 local mainFrame = Instance.new("Frame", mainGui)
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 480, 0, 400)
