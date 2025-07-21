@@ -93,7 +93,7 @@ end)
 local mainFrame = Instance.new("Frame", mainGui)
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 480, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -240, 0.5, -200)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Cor principal branco
 mainFrame.BackgroundTransparency = 0.1
