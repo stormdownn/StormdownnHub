@@ -1,5 +1,9 @@
 -- StormdownnHub_V1
 
+-- =======
+-- INÍCIO/SENHA
+-- =======
+
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
@@ -79,4 +83,130 @@ loginButton.MouseButton1Click:Connect(function()
         incorrectLabel.Text = ""
         passwordBox.Text = ""
     end
+end)
+
+-- =======
+-- HUB PRINCIPAL
+-- =======
+
+-- Main frame do Hub
+local mainFrame = Instance.new("Frame", mainGui)
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 480, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -240, 0.5, -200)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Cor principal branco
+mainFrame.BackgroundTransparency = 0.1
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 14)
+
+-- Imagem de fundo (blur) do Aizawa
+local blurImg = Instance.new("ImageLabel", mainFrame)
+blurImg.Size = UDim2.new(1, 0, 1, 0)
+blurImg.Position = UDim2.new(0, 0, 0, 0)
+blurImg.BackgroundTransparency = 1
+blurImg.Image = "rbxassetid://15327849226" -- Aizawa
+blurImg.ImageTransparency = 0.8
+blurImg.ScaleType = Enum.ScaleType.Crop
+blurImg.ZIndex = 0
+
+-- Frame que conterá os scripts, com fundo levemente escuro para destaque
+local scriptsFrame = Instance.new("Frame", mainFrame)
+scriptsFrame.Name = "ScriptsFrame"
+scriptsFrame.Size = UDim2.new(0.95, 0, 0.6, 0)
+scriptsFrame.Position = UDim2.new(0.025, 0, 0.22, 0)
+scriptsFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- fundo preto para destaque
+scriptsFrame.BackgroundTransparency = 0.6 -- levemente transparente
+scriptsFrame.BorderSizePixel = 0
+scriptsFrame.ClipsDescendants = true
+Instance.new("UICorner", scriptsFrame).CornerRadius = UDim.new(0, 10)
+
+-- Scrolling frame dentro do container dos scripts
+local scrollFrame = Instance.new("ScrollingFrame", scriptsFrame)
+scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollFrame.ScrollBarThickness = 6
+scrollFrame.BackgroundTransparency = 1
+scrollFrame.BorderSizePixel = 0
+scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scrollFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+
+local uiLayout = Instance.new("UIListLayout", scrollFrame)
+uiLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiLayout.Padding = UDim.new(0, 6)
+
+-- Lista dos scripts/features
+local features = {
+    "Fly", "NoClip", "ESP", "KillPlayers", "WalkFling", "PuxarPlayer",
+    "RingParts", "Magnet", "LagOthers", "Telekinesis"
+}
+
+for i, feature in ipairs(features) do
+    local btn = Instance.new("TextButton")
+    btn.Name = feature .. "_Button"
+    btn.Size = UDim2.new(0.95, 0, 0, 38)
+    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- cor secundária preta
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 18
+    btn.Text = feature .. ": OFF"
+    btn.LayoutOrder = i
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+
+    local active = false
+    btn.MouseButton1Click:Connect(function()
+        active = not active
+        btn.Text = feature .. ": " .. (active and "ON" or "OFF")
+        print("[StormdownnHub] Feature toggled:", feature, active)
+        -- Aqui entra a lógica real do script
+    end)
+
+    btn.Parent = scrollFrame
+end
+
+-- Botão flutuante estilo GhostHub, centralizado no topo da tela
+local toggleButton = Instance.new("ImageButton", guiParent)
+toggleButton.Name = "StormdownnHub_Toggle"
+toggleButton.Size = UDim2.new(0, 48, 0, 48)
+toggleButton.Position = UDim2.new(0.5, -24, 0, 12) -- centralizado horizontal, topo com 12px
+toggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- cor principal branca
+toggleButton.BackgroundTransparency = 0.15
+toggleButton.AutoButtonColor = false
+toggleButton.Image = "rbxassetid://15327849226" -- Aizawa
+Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
+toggleButton.ZIndex = 20
+
+-- TweenService para animações
+local TweenService = game:GetService("TweenService")
+local panelOpen = true
+
+-- Função para abrir painel com animação (fade + slide)
+local function openPanel()
+    mainFrame.Visible = true
+    local goal = {Position = UDim2.new(0.5, -240, 0.5, -200), BackgroundTransparency = 0.1}
+    TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quint), goal):Play()
+end
+
+-- Função para fechar painel com animação (fade + slide para cima)
+local function closePanel()
+    local goal = {Position = UDim2.new(0.5, -240, 0, -mainFrame.Size.Y.Offset), BackgroundTransparency = 1}
+    local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quint), goal)
+    tween:Play()
+    tween.Completed:Connect(function()
+        mainFrame.Visible = false
+    end)
+end
+
+-- Inicialização
+mainFrame.Position = UDim2.new(0.5, -240, 0.5, -200)
+mainFrame.BackgroundTransparency = 0.1
+mainFrame.Visible = true
+
+-- Evento do botão para abrir/fechar painel com animação
+toggleButton.MouseButton1Click:Connect(function()
+    if panelOpen then
+        closePanel()
+    else
+        openPanel()
+    end
+    panelOpen = not panelOpen
 end)
