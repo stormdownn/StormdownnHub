@@ -2,15 +2,17 @@
 
 -- =======
 -- INÍCIO/SENHA
--- =======
+-- ======= 
 
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local HUB_PASSWORD = "stormdownn" -- Mude aqui sua senha
+local HUB_PASSWORD = "stormdownn" -- Mude sua senha aqui
 
--- Tela de Login
+-- Tela de login
 local loginGui = Instance.new("ScreenGui")
 loginGui.Name = "StormdownnLogin"
 loginGui.ResetOnSpawn = false
@@ -98,7 +100,7 @@ MainFrame.Draggable = true
 local BotaoFlutuante = Instance.new("TextButton")
 BotaoFlutuante.Name = "BotaoFlutuante"
 BotaoFlutuante.Size = UDim2.new(0, 40, 0, 40)
-BotaoFlutuante.Position = UDim2.new(0, -20, 0, -20) -- metade fora do painel
+BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20) -- metade fora do painel no topo central
 BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 BotaoFlutuante.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotaoFlutuante.Text = "✦"
@@ -109,22 +111,33 @@ Instance.new("UICorner", BotaoFlutuante).CornerRadius = UDim.new(1, 0)
 BotaoFlutuante.Visible = false
 BotaoFlutuante.Parent = mainGui
 
-local UserInputService = game:GetService("UserInputService")
-
 local painelAberto = true
+
+-- Guarda a posição do botão quando o painel está fechado
+local posFechado = nil
+
+local function fixarBotaoNoTopoDoPainel()
+	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20)
+	BotaoFlutuante.Parent = MainFrame
+	BotaoFlutuante.Draggable = false
+end
 
 local function alternarPainel()
 	painelAberto = not painelAberto
 
 	if painelAberto then
 		MainFrame.Visible = true
-		BotaoFlutuante.Parent = MainFrame
-		BotaoFlutuante.Position = UDim2.new(0, -20, 0, -20) -- metade para fora
-		BotaoFlutuante.Draggable = false
+		fixarBotaoNoTopoDoPainel()
 	else
 		MainFrame.Visible = false
 		BotaoFlutuante.Parent = mainGui
 		BotaoFlutuante.Draggable = true
+		-- Se já tiver posição salva, aplica, senão usa a atual
+		if posFechado then
+			BotaoFlutuante.Position = posFechado
+		else
+			posFechado = BotaoFlutuante.Position
+		end
 	end
 end
 
@@ -141,6 +154,7 @@ BotaoFlutuante.InputBegan:Connect(function(input)
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
+				posFechado = BotaoFlutuante.Position
 			end
 		end)
 	end
@@ -167,8 +181,7 @@ loginButton.MouseButton1Click:Connect(function()
 		painelAberto = true
 
 		BotaoFlutuante.Visible = true
-		BotaoFlutuante.Parent = MainFrame
-		BotaoFlutuante.Position = UDim2.new(0, -20, 0, -20)
+		fixarBotaoNoTopoDoPainel()
 	else
 		incorrectLabel.Text = "Senha incorreta!"
 		wait(1.5)
