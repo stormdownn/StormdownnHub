@@ -194,6 +194,8 @@ end)
 
 -- Abrir e fechar o painel
 
+local panelOpen = false
+
 toggleButton.MouseButton1Click:Connect(function()
 	panelOpen = not panelOpen
 
@@ -204,28 +206,26 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleButton.Parent = mainFrame
 		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		else
-	toggleButton.Visible = true
-toggleButton.Parent = mainFrame
-toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		end
+	else
+		toggleButton.Parent = guiParent
+		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+	end
 
-	toggleButton.Visible = true -- ← garante que nunca suma
+	toggleButton.Visible = true -- Garante que sempre aparece
 end)
 
 -- Verificação de login
 loginButton.MouseButton1Click:Connect(function()
 	if passwordBox.Text == HUB_PASSWORD then
 		loginGui:Destroy()
-mainGui.Enabled = true
-mainFrame.Visible = true
-panelOpen = true
+		mainGui.Enabled = true
+		mainFrame.Visible = true
 
-toggleButton.Visible = true
-toggleButton.Parent = mainFrame
-toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+		toggleButton.Visible = true
+		toggleButton.Parent = mainFrame
+		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 	else
 		incorrectLabel.Text = "Senha incorreta!"
 		wait(1.5)
