@@ -69,25 +69,6 @@ incorrectLabel.TextSize = 16
 
 local HUB_PASSWORD = "stormdownn"
 
--- LOGIN (continuação da Parte 1)
-
-loginButton.MouseButton1Click:Connect(function()
-    local typed = passwordBox.Text
-    if typed == HUB_PASSWORD then
-    incorrectLabel.Text = ""
-    loginGui:Destroy()
-    toggleButton.Visible = true
-    print("✅ Login bem-sucedido.")
-    -- mostrar botão após login
-    mainGui.Enabled = true
-    else
-        incorrectLabel.Text = "Senha incorreta!"
-        wait(1.5)
-        incorrectLabel.Text = ""
-        passwordBox.Text = ""
-    end
-end)
-
 -- =======
 -- HUB PRINCIPAL
 -- =======
@@ -285,5 +266,24 @@ toggleButton.MouseButton1Click:Connect(function()
         tween:Play()
         tween.Completed:Wait()
         mainGui.Enabled = false
+    end
+end)
+
+-- LOGIN (continuação da Parte 1)
+
+loginButton.MouseButton1Click:Connect(function()
+    local typed = passwordBox.Text
+    if typed == HUB_PASSWORD then
+    incorrectLabel.Text = ""
+    loginGui:Destroy()
+    toggleButton.Visible = true
+    print("✅ Login bem-sucedido.")
+    -- mostrar botão após login
+    mainGui.Enabled = true
+    else
+        incorrectLabel.Text = "Senha incorreta!"
+        wait(1.5)
+        incorrectLabel.Text = ""
+        passwordBox.Text = ""
     end
 end)
