@@ -27,10 +27,21 @@ loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
 Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
 
+local welcomeLabel = Instance.new("TextLabel", loginFrame)
+welcomeLabel.Size = UDim2.new(1, 0, 0, 80)
+welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
+welcomeLabel.BackgroundTransparency = 1
+welcomeLabel.Font = Enum.Font.GothamBold
+welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+welcomeLabel.TextSize = 18
+welcomeLabel.Text = "      🌩️ WELCOME 🌩️\n           THE ⚡StormdownnHub_V1⚡"
+welcomeLabel.TextYAlignment = Enum.TextYAlignment.Top
+welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
+
 local title = Instance.new("TextLabel", loginFrame)
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "🌩️ STORMDOWNNHUB_V1 🌩️"
+title.Text = ""
 title.TextColor3 = Color3.fromRGB(0, 0, 0)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
@@ -109,11 +120,13 @@ local function alternarPainel()
 
 	if painelAberto then
 		MainFrame.Visible = true
+		BotaoFlutuante.Visible = true
 		BotaoFlutuante.Draggable = false
 		local novaPos = UDim2.new(0.5, -20, 0, 5)
 		TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = novaPos}):Play()
 	else
 		MainFrame.Visible = false
+		BotaoFlutuante.Visible = true -- Força o botão continuar visível
 		BotaoFlutuante.Draggable = true
 	end
 end
