@@ -4,6 +4,7 @@
 -- INÍCIO/SENHA
 -- =======
 
+-- Parte 1: Tela de Boas-Vindas e Senha (Estilizado)
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
@@ -14,36 +15,38 @@ loginGui.Name = "StormdownnLogin"
 loginGui.ResetOnSpawn = false
 loginGui.Parent = playerGui
 
--- Mensagem de Boas-Vindas (3 linhas, centralizada, preta)
-local welcomeLabel = Instance.new("TextLabel")
-welcomeLabel.Parent = loginGui
-welcomeLabel.Size = UDim2.new(0, 400, 0, 100)
-welcomeLabel.Position = UDim2.new(0.5, -200, 0.1, 0)
-welcomeLabel.BackgroundTransparency = 1
-welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-welcomeLabel.Font = Enum.Font.GothamBlack
-welcomeLabel.TextSize = 24
-welcomeLabel.TextWrapped = true
-welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
-welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
-welcomeLabel.Text = "🌩️ BEM-VINDO 🌩️\nAO\n⚡StormdownnHub_V1⚡"
-
--- Quadro do login (branco com leve transparência)
+-- Container principal
 local loginFrame = Instance.new("Frame")
 loginFrame.Name = "LoginFrame"
 loginFrame.Parent = loginGui
-loginFrame.Size = UDim2.new(0, 350, 0, 200)
-loginFrame.Position = UDim2.new(0.5, -175, 0.4, -100)
+loginFrame.Size = UDim2.new(0, 360, 0, 230)
+loginFrame.Position = UDim2.new(0.5, -180, 0.5, -115)
 loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-loginFrame.BackgroundTransparency = 0.2
 loginFrame.BorderSizePixel = 0
+
+-- Borda arredondada
+local corner = Instance.new("UICorner", loginFrame)
+corner.CornerRadius = UDim.new(0, 12)
+
+-- Mensagem de boas-vindas (3 linhas)
+local welcomeLabel = Instance.new("TextLabel")
+welcomeLabel.Parent = loginFrame
+welcomeLabel.Size = UDim2.new(1, 0, 0, 70)
+welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
+welcomeLabel.BackgroundTransparency = 1
+welcomeLabel.Text = "🌩️ BEM-VINDO 🌩️\nAO\n⚡StormdownnHub_V1⚡"
+welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+welcomeLabel.Font = Enum.Font.GothamBlack
+welcomeLabel.TextSize = 20
+welcomeLabel.TextWrapped = true
+welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
 
 -- Caixa de senha (levemente escurecida)
 local passwordBox = Instance.new("TextBox")
 passwordBox.Parent = loginFrame
 passwordBox.PlaceholderText = "Digite a senha"
-passwordBox.Size = UDim2.new(0, 280, 0, 40)
-passwordBox.Position = UDim2.new(0.5, -140, 0.4, -20)
+passwordBox.Size = UDim2.new(0.85, 0, 0, 40)
+passwordBox.Position = UDim2.new(0.5, -150, 0.55, -20)
 passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
 passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 passwordBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
@@ -51,25 +54,30 @@ passwordBox.Font = Enum.Font.Gotham
 passwordBox.TextSize = 16
 passwordBox.ClearTextOnFocus = false
 passwordBox.Text = ""
+local pwCorner = Instance.new("UICorner", passwordBox)
+pwCorner.CornerRadius = UDim.new(0, 8)
 
--- Botão de entrar (preto com texto branco)
+-- Botão de entrar (preto com letras brancas)
 local loginButton = Instance.new("TextButton")
 loginButton.Parent = loginFrame
 loginButton.Text = "ENTRAR"
-loginButton.Size = UDim2.new(0, 280, 0, 40)
-loginButton.Position = UDim2.new(0.5, -140, 0.7, -20)
+loginButton.Size = UDim2.new(0.85, 0, 0, 40)
+loginButton.Position = UDim2.new(0.5, -150, 0.8, -20)
 loginButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 loginButton.Font = Enum.Font.GothamBold
 loginButton.TextSize = 16
+local btnCorner = Instance.new("UICorner", loginButton)
+btnCorner.CornerRadius = UDim.new(0, 8)
 
--- Verificação da senha
-local senhaCorreta = "Stormdownn123" -- 🛡️ Senha do Hub
+-- Senha correta
+local senhaCorreta = "Stormdownn123"
 
+-- Validação da senha
 loginButton.MouseButton1Click:Connect(function()
 	if passwordBox.Text == senhaCorreta then
 		loginGui:Destroy()
-		loadstring(game:HttpGet("AQUI_VAI_A_INTERFACE"))() -- ← Aqui você cola a Parte 2 depois
+		loadstring(game:HttpGet("AQUI_VAI_A_INTERFACE"))()
 	else
 		passwordBox.Text = ""
 		passwordBox.PlaceholderText = "Senha incorreta!"
