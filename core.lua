@@ -4,84 +4,83 @@
 -- INÍCIO/SENHA
 -- =======
 
---// Serviços principais
+-- Serviços
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
-
 local player = Players.LocalPlayer
-local guiParent = player:WaitForChild("PlayerGui")
 
---// Constantes
-local HUB_PASSWORD = "stormdownn" -- senha
-
---// GUI de login
-local loginGui = Instance.new("ScreenGui", guiParent)
-loginGui.Name = "StormdownnLogin"
+-- Interface principal
+local loginGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+loginGui.Name = "LoginGui"
 loginGui.ResetOnSpawn = false
 
+-- Frame do login
 local loginFrame = Instance.new("Frame", loginGui)
-loginFrame.Size = UDim2.new(0, 300, 0, 200)
-loginFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+loginFrame.Name = "LoginFrame"
+loginFrame.Size = UDim2.new(0, 280, 0, 200)
+loginFrame.Position = UDim2.new(0.5, -140, 0.5, -100)
 loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
-Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
+loginFrame.BackgroundTransparency = 0.05
+loginFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+loginFrame.ClipsDescendants = true
+loginFrame.ZIndex = 2
 
-local testGui = Instance.new("ScreenGui", game.Players.LocalPlayer.PlayerGui)
-local testFrame = Instance.new("Frame", testGui)
-testFrame.Size = UDim2.new(0, 400, 0, 300)
-testFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-testFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+-- Cantos arredondados
+local corner = Instance.new("UICorner", loginFrame)
+corner.CornerRadius = UDim.new(0, 12)
 
-local welcome = Instance.new("TextLabel", testFrame)
-welcome.Size = UDim2.new(1, -20, 0, 80)
-welcome.Position = UDim2.new(0, 10, 0, 10)
-welcome.BackgroundTransparency = 1
-welcome.TextColor3 = Color3.fromRGB(0, 0, 0)
-welcome.Font = Enum.Font.GothamBlack
-welcome.TextSize = 20
-welcome.TextWrapped = true
-welcome.Text = "🌩️ BEM-VINDO 🌩️\nAO\n⚡StormdownnHub_V1⚡"
-welcome.TextXAlignment = Enum.TextXAlignment.Center
+-- Boas-vindas (3 linhas centralizadas)
+local welcomeLabel = Instance.new("TextLabel", loginFrame)
+welcomeLabel.Size = UDim2.new(1, -20, 0, 80)
+welcomeLabel.Position = UDim2.new(0, 10, 0, 10)
+welcomeLabel.BackgroundTransparency = 1
+welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+welcomeLabel.Font = Enum.Font.GothamBlack
+welcomeLabel.TextSize = 20
+welcomeLabel.TextWrapped = true
+welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTHEO\n⚡StormdownnHub_V1⚡"
+welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
+welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
 
-local title = Instance.new("TextLabel", loginFrame)
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.Text = ""
-title.TextColor3 = Color3.fromRGB(0, 0, 0)
-title.Font = Enum.Font.GothamBlack
-title.TextSize = 22
-
+-- Campo de senha
 local passwordBox = Instance.new("TextBox", loginFrame)
-passwordBox.Size = UDim2.new(0.9, 0, 0, 50)
-passwordBox.Position = UDim2.new(0.05, 0, 0, 70)
+passwordBox.PlaceholderText = "Digite a senha"
+passwordBox.Text = ""
+passwordBox.Size = UDim2.new(1, -40, 0, 35)
+passwordBox.Position = UDim2.new(0, 20, 0, 105)
 passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
-passwordBox.ClearTextOnFocus = true
-passwordBox.Font = Enum.Font.GothamBold
 passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0)
-passwordBox.TextSize = 22
-passwordBox.PlaceholderText = "Digite a senha..."
-passwordBox.TextXAlignment = Enum.TextXAlignment.Left
-Instance.new("UICorner", passwordBox).CornerRadius = UDim.new(0, 8)
+passwordBox.Font = Enum.Font.Gotham
+passwordBox.TextSize = 18
+passwordBox.ClearTextOnFocus = false
+passwordBox.TextScaled = false
 
+local corner2 = Instance.new("UICorner", passwordBox)
+corner2.CornerRadius = UDim.new(0, 8)
+
+-- Botão de login
 local loginButton = Instance.new("TextButton", loginFrame)
-loginButton.Size = UDim2.new(0.6, 0, 0, 40)
-loginButton.Position = UDim2.new(0.2, 0, 0, 130)
-loginButton.Text = "Entrar"
-loginButton.Font = Enum.Font.GothamBold
-loginButton.TextSize = 18
+loginButton.Text = "ENTRAR"
+loginButton.Size = UDim2.new(1, -40, 0, 35)
+loginButton.Position = UDim2.new(0, 20, 0, 150)
 loginButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-Instance.new("UICorner", loginButton).CornerRadius = UDim.new(0, 8)
+loginButton.Font = Enum.Font.GothamBold
+loginButton.TextSize = 18
 
-local incorrectLabel = Instance.new("TextLabel", loginFrame)
-incorrectLabel.Size = UDim2.new(1, 0, 0, 20)
-incorrectLabel.Position = UDim2.new(0, 0, 1, -20)
-incorrectLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-incorrectLabel.Font = Enum.Font.Gotham
-incorrectLabel.TextSize = 14
-incorrectLabel.Text = ""
-incorrectLabel.BackgroundTransparency = 1
+local corner3 = Instance.new("UICorner", loginButton)
+corner3.CornerRadius = UDim.new(0, 8)
+
+-- Evento de login
+loginButton.MouseButton1Click:Connect(function()
+	if passwordBox.Text == "Stormdownn123" then
+		loginGui.Enabled = false
+		MainFrame.Visible = true
+	else
+		passwordBox.Text = ""
+		passwordBox.PlaceholderText = "Senha incorreta!"
+	end
+end)
 
 -- =======
 -- HUB PRINCIPAL
