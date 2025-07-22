@@ -4,9 +4,15 @@
 -- INÍCIO/SENHA
 -- =======
 
+
 local Players = game:GetService("Players")
+print("🎮 Script rodando!")
+task.wait(1)
+print("👤 Jogador:", player)
+print("📦 PlayerGui:", player:FindFirstChild("PlayerGui"))
 local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
+print("✅ PlayerGui encontrado:", guiParent)
 local TweenService = game:GetService("TweenService")
 local panelOpen = false
 
@@ -242,56 +248,22 @@ enableDragging(toggleButton) -- já deixa a função pronta (ativa só se estive
 
 -- Controle de abrir e fechar
 
-toggleButton.MouseButton1Click:Connect(function()
-    panelOpen = not panelOpen
-
-    if panelOpen then
-        toggleButton.Text = "Fechar"
-
-        -- Reanexar botão ao Hub (dentro do mainFrame)
-        toggleButton.Parent = mainFrame
-        toggleButton.Position = UDim2.new(0.5, -25, 0, -25)
-        toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-
-        mainGui.Enabled = true
-        mainFrame.Visible = true
-
-        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 0})
-        tween:Play()
-
-    else
-        toggleButton.Text = "Abrir"
-
-        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
-        tween:Play()
-
-        tween.Completed:Connect(function()
-            mainGui.Enabled = false
-            mainFrame.Visible = false
-
-            -- Mover o botão de volta para a tela (fora do mainFrame)
-            toggleButton.Parent = guiParent
-            toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-            toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-        end)
-    end
-end)
-
--- LOGIN (continuação da Parte 1)
-
 loginButton.MouseButton1Click:Connect(function()
     local typed = passwordBox.Text
     if typed == HUB_PASSWORD then
-    incorrectLabel.Text = ""
-    loginGui:Destroy()
-    toggleButton.Visible = true
-toggleButton.Parent = guiParent -- Mover o botão para a tela
-toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- posição flutuante no topo
-toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+        incorrectLabel.Text = ""
+        loginGui:Destroy()
 
-print("✅ Login bem-sucedido.")
-mainGui.Enabled = false -- o hub ainda está fechado
-mainFrame.Visible = false
+        -- Ativar botão flutuante após login
+        toggleButton.Parent = guiParent
+        toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+        toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+        toggleButton.Visible = true
+
+        print("✅ Login bem-sucedido.")
+
+        mainGui.Enabled = false
+        mainFrame.Visible = false
     else
         incorrectLabel.Text = "Senha incorreta!"
         wait(1.5)
