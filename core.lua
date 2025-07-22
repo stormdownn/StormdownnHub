@@ -202,7 +202,7 @@ toggleButton.TextSize = 22
 toggleButton.AutoButtonColor = false
 toggleButton.ZIndex = 100
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
-toggleButton.Parent = guiParent -- começa preso ao painel
+toggleButton.Parent = mainFrame -- começa preso ao painel
 
 -- Drag system para quando estiver solto
 local UserInputService = game:GetService("UserInputService")
