@@ -194,8 +194,6 @@ end)
 
 -- Abrir e fechar o painel
 
-local panelOpen = false
-
 toggleButton.MouseButton1Click:Connect(function()
 	if panelOpen then
 		-- FECHAR o painel, mas manter o botão visível e arrastável
