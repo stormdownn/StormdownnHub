@@ -147,8 +147,6 @@ end
 
 -- Botão flutuante preto no topo central para abrir/fechar painel
 
-local guiParent = player:WaitForChild("PlayerGui")
-
 -- Criar botão flutuante
 local toggleButton = Instance.new("TextButton")
 toggleButton.Name = "ToggleButton"
@@ -164,6 +162,7 @@ toggleButton.AutoButtonColor = false
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
 toggleButton.ZIndex = 100
 toggleButton.Parent = guiParent
+toggleButton.Visible = false
 
 -- Tornar botão arrastável
 local dragging = false
@@ -210,9 +209,6 @@ end)
 
 local TweenService = game:GetService("TweenService")
 
-local mainGui = guiParent:WaitForChild("StormdownnHub_Main")
-local mainFrame = mainGui:WaitForChild("MainFrame")
-
 local panelOpen = false -- começa fechado
 
 toggleButton.MouseButton1Click:Connect(function()
@@ -238,9 +234,10 @@ end)
 loginButton.MouseButton1Click:Connect(function()
     local typed = passwordBox.Text
     if typed == HUB_PASSWORD then
-        incorrectLabel.Text = ""
-        loginGui:Destroy()
-        mainGui.Enabled = true
+    incorrectLabel.Text = ""
+    loginGui:Destroy()
+    toggleButton.Visible = true -- mostrar botão após login
+    mainGui.Enabled = true
     else
         incorrectLabel.Text = "Senha incorreta!"
         wait(1.5)
