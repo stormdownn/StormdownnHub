@@ -8,6 +8,7 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
+local panelOpen = false
 
 -- Remove GUIs antigas
 for _, name in pairs({"StormdownnHub_Login", "StormdownnHub_Main"}) do
@@ -201,9 +202,8 @@ toggleButton.Visible = false
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 22
 toggleButton.AutoButtonColor = false
-toggleButton.ZIndex = 100
+toggleButton.ZIndex = 10
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
-toggleButton.Parent = guiParente -- começa preso ao painel
 
 -- Drag system para quando estiver solto
 local UserInputService = game:GetService("UserInputService")
