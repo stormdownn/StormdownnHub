@@ -9,7 +9,6 @@ local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
-
 local panelOpen = false
 
 -- Limpa GUIs anteriores
@@ -161,7 +160,6 @@ toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleButton.Text = "✦"
-toggleButton.Visible = false
 toggleButton.ZIndex = 10
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 22
@@ -195,6 +193,7 @@ UIS.InputEnded:Connect(function(input)
 end)
 
 -- Abrir e fechar o painel
+
 toggleButton.MouseButton1Click:Connect(function()
 	panelOpen = not panelOpen
 
@@ -202,16 +201,16 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = panelOpen
 
 	if panelOpen then
-		-- Fixar no topo do painel
+		toggleButton.Parent = mainFrame
 		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		toggleButton.Parent = mainFrame
 	else
-		-- Voltar ao modo flutuante
+		toggleButton.Parent = guiParent
 		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		toggleButton.Parent = guiParent
 	end
+
+	toggleButton.Visible = true -- ← garante que nunca suma
 end)
 
 -- Verificação de login
