@@ -187,86 +187,74 @@ end
 
 -- Botão flutuante preto no topo central para abrir/fechar painel
 
--- Criar botão flutuante
+-- Criação do botão flutuante
 local toggleButton = Instance.new("TextButton")
 toggleButton.Name = "ToggleButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- topo central
-toggleButton.AnchorPoint = Vector2.new(0, 0)
+toggleButton.Position = UDim2.new(0.5, -25, 0, -30) -- topo central do mainFrame
+toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleButton.Text = "Abrir"
+toggleButton.Text = "✦"
 toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextSize = 18
+toggleButton.TextSize = 22
 toggleButton.AutoButtonColor = false
-Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
 toggleButton.ZIndex = 100
-toggleButton.Parent = mainGui
-toggleButton.Visible = false
+Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
 
--- Tornar botão arrastável
+toggleButton.Parent = mainFrame -- começa preso ao painel
+
+-- Drag system para quando estiver solto
+local UserInputService = game:GetService("UserInputService")
 local dragging = false
-local dragInput, mousePos, framePos
+local dragInput, dragStart, startPos
 
-local function updatePosition(input)
-    local delta = input.Position - mousePos
-    local newPos = UDim2.new(
-        0,
-        math.clamp(framePos.X.Offset + delta.X, 0, guiParent.AbsoluteSize.X - toggleButton.AbsoluteSize.X),
-        0,
-        math.clamp(framePos.Y.Offset + delta.Y, 0, guiParent.AbsoluteSize.Y - toggleButton.AbsoluteSize.Y)
-    )
-    toggleButton.Position = newPos
+local function enableDragging(button)
+	button.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = button.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			local delta = input.Position - dragStart
+			button.Position = UDim2.new(
+				startPos.X.Scale,
+				startPos.X.Offset + delta.X,
+				startPos.Y.Scale,
+				startPos.Y.Offset + delta.Y
+			)
+		end
+	end)
 end
 
-toggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        mousePos = input.Position
-        framePos = toggleButton.Position
+enableDragging(toggleButton) -- já deixa a função pronta (ativa só se estiver solto)
 
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-toggleButton.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        updatePosition(input)
-    end
-end)
-
--- Função para abrir/fechar o painel
-
-local TweenService = game:GetService("TweenService")
-
-local panelOpen = false -- começa fechado
+-- Controle de abrir e fechar
+local isOpen = true
 
 toggleButton.MouseButton1Click:Connect(function()
-    panelOpen = not panelOpen
-
-    if panelOpen then
-        toggleButton.Text = "Fechar"
-        mainGui.Enabled = true
-        mainFrame.Visible = true
-        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 0})
-        tween:Play()
-    else
-        toggleButton.Text = "Abrir"
-        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
-        tween:Play()
-        tween.Completed:Wait()
-        mainGui.Enabled = false
-    end
+	if isOpen then
+		mainGui.Enabled = false
+		toggleButton.Text = "Abrir"
+		toggleButton.Parent = guiParent
+		toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- posição livre
+	else
+		mainGui.Enabled = true
+		toggleButton.Text = "Fechar"
+		toggleButton.Parent = mainFrame
+		toggleButton.Position = UDim2.new(0.5, -25, 0, -30) -- volta pro topo
+	end
+	isOpen = not isOpen
 end)
 
 -- LOGIN (continuação da Parte 1)
