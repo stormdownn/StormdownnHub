@@ -4,9 +4,20 @@
 -- INÍCIO/SENHA
 -- =======
 
-local player = game.Players.LocalPlayer
-local stormdownnHubMain = player:WaitForChild("PlayerGui"):WaitForChild("StormdownnHub_Main")
-stormdownnHubMain.Enabled = true
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local guiParent = player:WaitForChild("PlayerGui")
+
+-- Remove GUIs antigas
+for _, name in pairs({"StormdownnHub_Login", "StormdownnHub_Main"}) do
+    local oldGui = guiParent:FindFirstChild(name)
+    if oldGui then oldGui:Destroy() end
+end
+
+-- Criar ScreenGui de Login
+local loginGui = Instance.new("ScreenGui", guiParent)
+loginGui.Name = "StormdownnHub_Login"
+loginGui.ResetOnSpawn = false
 
 local loginFrame = Instance.new("Frame", loginGui)
 loginFrame.Size = UDim2.new(0, 320, 0, 180)
@@ -22,29 +33,26 @@ title.Position = UDim2.new(0, 0, 0, 10)
 title.BackgroundTransparency = 1
 title.Text = "Stormdownn Hub Login"
 title.Font = Enum.Font.GothamBold
-title.TextColor3 = Color3.fromRGB(0, 0, 0) -- preto
+title.TextColor3 = Color3.fromRGB(0, 0, 0)
 title.TextSize = 24
-title.TextStrokeTransparency = 0.7
 
 local passwordBox = Instance.new("TextBox", loginFrame)
 passwordBox.Size = UDim2.new(0.9, 0, 0, 50)
 passwordBox.Position = UDim2.new(0.05, 0, 0, 70)
-passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230) -- cinza claro
-passwordBox.ClearTextOnFocus = false
+passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
+passwordBox.ClearTextOnFocus = true
 passwordBox.Font = Enum.Font.GothamBold
-passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0) -- preto
+passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 passwordBox.TextSize = 22
 passwordBox.PlaceholderText = "Digite a senha..."
 passwordBox.TextXAlignment = Enum.TextXAlignment.Left
-passwordBox.ClearTextOnFocus = true
-passwordBox.Text = ""
 Instance.new("UICorner", passwordBox).CornerRadius = UDim.new(0, 8)
 
 local loginButton = Instance.new("TextButton", loginFrame)
 loginButton.Size = UDim2.new(0.9, 0, 0, 40)
 loginButton.Position = UDim2.new(0.05, 0, 0, 130)
-loginButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- preto
-loginButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- branco
+loginButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 loginButton.Font = Enum.Font.GothamBold
 loginButton.TextSize = 20
 loginButton.Text = "Entrar"
@@ -61,39 +69,15 @@ incorrectLabel.TextSize = 16
 
 local HUB_PASSWORD = "stormdownn"
 
-loginButton.MouseButton1Click:Connect(function()
-    local typed = passwordBox.Text
-    if typed == HUB_PASSWORD then
-        incorrectLabel.Text = ""
-        loginGui:Destroy()
-        -- Aqui você pode ativar o GUI principal
-    else
-        incorrectLabel.Text = "Senha incorreta!"
-        wait(1.5)
-        incorrectLabel.Text = ""
-        passwordBox.Text = ""
-    end
-end)
-
 -- =======
 -- HUB PRINCIPAL
 -- =======
 
--- Main frame do Hub
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local guiParent = player:WaitForChild("PlayerGui")
-
--- Remove GUI antiga
-local oldGui = guiParent:FindFirstChild("StormdownnHub_Main")
-if oldGui then oldGui:Destroy() end
-
--- Criar ScreenGui principal (inicialmente desativado, só ativar depois do login)
+-- Criar ScreenGui principal (inicialmente desativado)
 local mainGui = Instance.new("ScreenGui", guiParent)
 mainGui.Name = "StormdownnHub_Main"
 mainGui.ResetOnSpawn = false
-mainGui.Enabled = false  -- começa desativado
+mainGui.Enabled = false
 
 -- Frame principal (menor e branco)
 local mainFrame = Instance.new("Frame", mainGui)
@@ -135,7 +119,7 @@ uiLayout.Padding = UDim.new(0, 8)
 -- Lista de scripts exemplo (botões brancos com texto preto)
 local features = {
     "Fly", "NoClip", "ESP", "KillPlayers", "WalkFling", "PuxarPlayer",
-    "RingParts", "Magnet", "LagOthers", "Telekinesis"
+    "SuperRingParts", "Sledgehammer", "Magnet", "LagOthers", "Telekinesis"
 }
 
 for i, feature in ipairs(features) do
@@ -167,7 +151,7 @@ toggleButton.Name = "ToggleButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-toggleButton.TextColor3 = Color3.fromRGB(1, 1, 1)
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleButton.Text = "Abrir"
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 18
@@ -194,5 +178,21 @@ toggleButton.MouseButton1Click:Connect(function()
         tween:Play()
         tween.Completed:Wait()
         mainGui.Enabled = false
+    end
+end)
+
+-- LOGIN (continuação da Parte 1)
+
+loginButton.MouseButton1Click:Connect(function()
+    local typed = passwordBox.Text
+    if typed == HUB_PASSWORD then
+        incorrectLabel.Text = ""
+        loginGui:Destroy()
+        mainGui.Enabled = true
+    else
+        incorrectLabel.Text = "Senha incorreta!"
+        wait(1.5)
+        incorrectLabel.Text = ""
+        passwordBox.Text = ""
     end
 end)
