@@ -28,12 +28,13 @@ loginFrame.BorderSizePixel = 0
 Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
 
 local welcomeLabel = Instance.new("TextLabel", loginFrame)
-welcomeLabel.Size = UDim2.new(1, 0, 0, 80)
+local welcomeLabel = Instance.new("TextLabel", loginFrame) -- ou MainFrame, depende de onde quer mostrar
+welcomeLabel.Size = UDim2.new(1, 0, 0, 50)
 welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
 welcomeLabel.BackgroundTransparency = 1
 welcomeLabel.Font = Enum.Font.GothamBold
 welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-welcomeLabel.TextSize = 18
+welcomeLabel.TextSize = 20
 welcomeLabel.Text = "      🌩️ WELCOME 🌩️\n           THE ⚡StormdownnHub_V1⚡"
 welcomeLabel.TextYAlignment = Enum.TextYAlignment.Top
 welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
@@ -99,39 +100,44 @@ Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Botão flutuante
-local BotaoFlutuante = Instance.new("ImageButton")
+-- Botão flutuante preto
+local BotaoFlutuante = Instance.new("TextButton")
 BotaoFlutuante.Name = "BotaoFlutuante"
 BotaoFlutuante.Size = UDim2.new(0, 40, 0, 40)
-BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5)
-BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-BotaoFlutuante.Image = "rbxassetid://15327849226" -- ícone do Aizawa
-BotaoFlutuante.BackgroundTransparency = 0.2
+BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5) -- posição inicial fixa no topo do painel
+BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- fundo preto
+BotaoFlutuante.TextColor3 = Color3.fromRGB(255, 255, 255) -- texto branco (pode mudar se quiser)
+BotaoFlutuante.Text = "✦" -- símbolo legal para o botão
+BotaoFlutuante.Font = Enum.Font.GothamBold
+BotaoFlutuante.TextSize = 24
 BotaoFlutuante.ZIndex = 100
 BotaoFlutuante.Parent = mainGui
 BotaoFlutuante.Visible = false
 Instance.new("UICorner", BotaoFlutuante).CornerRadius = UDim.new(1, 0)
 
+-- Variável para controlar estado do painel
 local painelAberto = true
 
--- Função abrir/fechar painel
+-- Função para abrir/fechar painel e posicionar botão
 local function alternarPainel()
 	painelAberto = not painelAberto
 
 	if painelAberto then
 		MainFrame.Visible = true
-		BotaoFlutuante.Visible = true
 		BotaoFlutuante.Draggable = false
-		local novaPos = UDim2.new(0.5, -20, 0, 5)
-		TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = novaPos}):Play()
+
+		-- Fixa o botão no topo do painel
+		local posFixada = UDim2.new(0.5, -20, 0, 5)
+		TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = posFixada}):Play()
 	else
 		MainFrame.Visible = false
-		BotaoFlutuante.Visible = true -- Força o botão continuar visível
 		BotaoFlutuante.Draggable = true
+
+		-- Quando estiver fechado, NÃO mover a posição, só deixar arrastável
+		-- Então não muda a posição aqui, o jogador pode arrastar livremente
 	end
 end
 
--- Clique no botão
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
 -- Ativar botão após login
@@ -153,7 +159,7 @@ loginButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Arrasto do botão quando o painel estiver fechado
+-- Drag do botão quando o painel estiver fechado
 local dragging, dragInput, dragStart, startPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
