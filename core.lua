@@ -204,11 +204,12 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleButton.Parent = mainFrame
 		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	else
-		toggleButton.Parent = guiParent
-		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	end
+		else
+	toggleButton.Visible = true
+toggleButton.Parent = mainFrame
+toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+		end
 
 	toggleButton.Visible = true -- ← garante que nunca suma
 end)
