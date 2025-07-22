@@ -117,7 +117,8 @@ local function moverBotaoParaPai(botao, novoPai)
 end
 
 local function fixarBotaoNoTopoDoPainel()
-	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20) -- metade fora do painel
+	-- Botão fica centralizado na largura do painel, e 50% para fora (acima)
+	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20) 
 	BotaoFlutuante.Draggable = false
 	BotaoFlutuante.Parent = MainFrame
 end
@@ -135,7 +136,7 @@ local function fecharPainel()
 	if posFechado then
 		BotaoFlutuante.Position = posFechado
 	else
-		moverBotaoParaPai(BotaoFlutuante, mainGui)
+		BotaoFlutuante.Position = UDim2.new(0, 10, 0.5, -20) -- Posição padrão caso não tenha sido movido ainda
 	end
 	BotaoFlutuante.Draggable = true
 	BotaoFlutuante.Parent = mainGui
@@ -162,7 +163,7 @@ BotaoFlutuante.InputBegan:Connect(function(input)
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
-				posFechado = BotaoFlutuante.Position
+				posFechado = BotaoFlutuante.Position -- salva posição após arrasto
 			end
 		end)
 	end
@@ -182,19 +183,16 @@ end)
 
 -- Validação da senha e abertura do hub
 loginButton.MouseButton1Click:Connect(function()
-    print("Botão ENTRAR clicado") -- DEBUG
-    local textoDigitado = passwordBox.Text:match("^%s*(.-)%s*$")
-    if textoDigitado == HUB_PASSWORD then
-        print("Senha correta, abrindo hub...") -- DEBUG
-        loginGui:Destroy()
-        mainGui.Enabled = true
-        abrirPainel()
-        BotaoFlutuante.Visible = true
-    else
-        print("Senha incorreta!") -- DEBUG
-        incorrectLabel.Text = "Senha incorreta!"
-        wait(1.5)
-        incorrectLabel.Text = ""
-        passwordBox.Text = ""
-    end
+	local textoDigitado = passwordBox.Text:match("^%s*(.-)%s*$")
+	if textoDigitado == HUB_PASSWORD then
+		loginGui:Destroy()
+		mainGui.Enabled = true
+		abrirPainel()
+		BotaoFlutuante.Visible = true
+	else
+		incorrectLabel.Text = "Senha incorreta!"
+		wait(1.5)
+		incorrectLabel.Text = ""
+		passwordBox.Text = ""
+	end
 end)
