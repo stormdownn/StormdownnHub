@@ -30,16 +30,17 @@ corner.CornerRadius = UDim.new(0, 12)
 
 -- Mensagem de boas-vindas (3 linhas)
 local welcomeLabel = Instance.new("TextLabel")
+welcomeLabel.Name = "welcomeLabel"
 welcomeLabel.Parent = loginFrame
-welcomeLabel.Size = UDim2.new(1, 0, 0, 70)
-welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
 welcomeLabel.BackgroundTransparency = 1
-welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTO THE\n⚡StormdownnHub_V1⚡"
+welcomeLabel.Size = UDim2.new(1, 0, 0.3, 0)
+welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
+welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTO\n⚡StormdownnHub_V1⚡"
+welcomeLabel.Font = Enum.Font.GothamBold
 welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-welcomeLabel.Font = Enum.Font.GothamBlack
-welcomeLabel.TextSize = 20
+welcomeLabel.TextStrokeTransparency = 0.5
+welcomeLabel.TextScaled = true
 welcomeLabel.TextWrapped = true
-welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
 
 -- Caixa de senha (levemente escurecida)
 local passwordBox = Instance.new("TextBox")
@@ -71,7 +72,7 @@ local btnCorner = Instance.new("UICorner", loginButton)
 btnCorner.CornerRadius = UDim.new(0, 8)
 
 -- Senha correta
-local senhaCorreta = "Stormdownn123"
+local senhaCorreta = "stormdownn"
 
 -- Validação da senha
 loginButton.MouseButton1Click:Connect(function()
