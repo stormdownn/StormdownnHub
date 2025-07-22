@@ -75,9 +75,6 @@ incorrectLabel.Text = ""
 incorrectLabel.TextWrapped = true
 
 -- ===== Interface do Hub =====
-local UserInputService = game:GetService("UserInputService")
-
-local painelAberto = true
 local mainGui = Instance.new("ScreenGui", playerGui)
 mainGui.Name = "StormdownnHub"
 mainGui.ResetOnSpawn = false
@@ -107,11 +104,10 @@ Instance.new("UICorner", BotaoFlutuante).CornerRadius = UDim.new(1, 0)
 BotaoFlutuante.Visible = false
 BotaoFlutuante.Parent = mainGui
 
--- Variáveis para controlar posição livre quando fechado
+local painelAberto = true
 local posFechado = nil
 
 local function moverBotaoParaPai(botao, novoPai)
-	-- Guarda posição absoluta antes de trocar pai
 	local absPos = botao.AbsolutePosition
 	botao.Parent = novoPai
 	local parentAbsPos = novoPai.AbsolutePosition
@@ -121,8 +117,7 @@ local function moverBotaoParaPai(botao, novoPai)
 end
 
 local function fixarBotaoNoTopoDoPainel()
-	-- Força o botão a ficar centralizado no topo do painel, metade pra dentro (-20 Y)
-	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20)
+	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20) -- metade fora do painel
 	BotaoFlutuante.Draggable = false
 	BotaoFlutuante.Parent = MainFrame
 end
@@ -130,7 +125,6 @@ end
 local function abrirPainel()
 	MainFrame.Visible = true
 	painelAberto = true
-	-- Sempre fixa no topo do painel quando abre
 	fixarBotaoNoTopoDoPainel()
 end
 
@@ -138,11 +132,9 @@ local function fecharPainel()
 	MainFrame.Visible = false
 	painelAberto = false
 
-	-- Se temos uma posição salva, usa ela
 	if posFechado then
 		BotaoFlutuante.Position = posFechado
 	else
-		-- Se não, usa a posição atual absoluta convertida para relativa no mainGui
 		moverBotaoParaPai(BotaoFlutuante, mainGui)
 	end
 	BotaoFlutuante.Draggable = true
@@ -159,7 +151,6 @@ end
 
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
--- Drag do botão quando fechado
 local dragging, dragStart, startPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
@@ -171,7 +162,6 @@ BotaoFlutuante.InputBegan:Connect(function(input)
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
-				-- Salva posição para manter depois do arrasto
 				posFechado = BotaoFlutuante.Position
 			end
 		end)
@@ -187,5 +177,21 @@ UserInputService.InputChanged:Connect(function(input)
 			startPos.Y.Scale,
 			startPos.Y.Offset + delta.Y
 		)
+	end
+end)
+
+-- Validação da senha e abertura do hub
+loginButton.MouseButton1Click:Connect(function()
+	local textoDigitado = passwordBox.Text:match("^%s*(.-)%s*$")
+	if textoDigitado == HUB_PASSWORD then
+		loginGui:Destroy()
+		mainGui.Enabled = true
+		abrirPainel()
+		BotaoFlutuante.Visible = true
+	else
+		incorrectLabel.Text = "Senha incorreta!"
+		wait(1.5)
+		incorrectLabel.Text = ""
+		passwordBox.Text = ""
 	end
 end)
