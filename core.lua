@@ -26,20 +26,20 @@ loginFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
 Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
-
-local welcomeLabel = Instance.new("TextLabel", MainFrame)
+-- Label de boas-vindas
+local welcomeLabel = Instance.new("TextLabel")
 welcomeLabel.Name = "WelcomeLabel"
-welcomeLabel.Size = UDim2.new(1, -20, 0, 70) -- largura menos 20 para margem
-welcomeLabel.Position = UDim2.new(0, 10, 0, 10) -- margem interna para não ficar grudado
-welcomeLabel.BackgroundTransparency = 1
-welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+welcomeLabel.Size = UDim2.new(1, -20, 0, 70) -- largura com margem e altura fixa
+welcomeLabel.Position = UDim2.new(0, 10, 0, 10) -- margem interna do topo e da esquerda
+welcomeLabel.BackgroundTransparency = 1 -- sem fundo
+welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- preto
 welcomeLabel.Font = Enum.Font.GothamBlack
 welcomeLabel.TextSize = 22
 welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTHE\n⚡StormdownnHub_V1⚡"
 welcomeLabel.TextWrapped = true
 welcomeLabel.TextYAlignment = Enum.TextYAlignment.Top
 welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
-welcomeLabel.ZIndex = 10
+welcomeLabel.Parent = MainFrame
 
 local title = Instance.new("TextLabel", loginFrame)
 title.Size = UDim2.new(1, 0, 0, 40)
