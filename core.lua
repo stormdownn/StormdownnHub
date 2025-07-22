@@ -94,7 +94,7 @@ local headerLabel = Instance.new("TextLabel", mainFrame)
 headerLabel.Size = UDim2.new(1, 0, 0, 50)
 headerLabel.Position = UDim2.new(0, 0, 0, 0)
 headerLabel.BackgroundTransparency = 1
-headerLabel.Text = "STORMDOWNNHUB_V1"
+headerLabel.Text = "🌩️ StormdawnnHub_V1 🌩️"
 headerLabel.Font = Enum.Font.GothamBold
 headerLabel.TextSize = 28
 headerLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -146,10 +146,15 @@ for i, feature in ipairs(features) do
 end
 
 -- Botão flutuante preto no topo central para abrir/fechar painel
-local toggleButton = Instance.new("TextButton", guiParent)
+
+local guiParent = player:WaitForChild("PlayerGui")
+
+-- Criar botão flutuante
+local toggleButton = Instance.new("TextButton")
 toggleButton.Name = "ToggleButton"
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- topo central
+toggleButton.AnchorPoint = Vector2.new(0, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleButton.Text = "Abrir"
@@ -157,9 +162,56 @@ toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 18
 toggleButton.AutoButtonColor = false
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
-toggleButton.ZIndex = 50
+toggleButton.ZIndex = 100
+toggleButton.Parent = guiParent
+
+-- Tornar botão arrastável
+local dragging = false
+local dragInput, mousePos, framePos
+
+local function updatePosition(input)
+    local delta = input.Position - mousePos
+    local newPos = UDim2.new(
+        0,
+        math.clamp(framePos.X.Offset + delta.X, 0, guiParent.AbsoluteSize.X - toggleButton.AbsoluteSize.X),
+        0,
+        math.clamp(framePos.Y.Offset + delta.Y, 0, guiParent.AbsoluteSize.Y - toggleButton.AbsoluteSize.Y)
+    )
+    toggleButton.Position = newPos
+end
+
+toggleButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        mousePos = input.Position
+        framePos = toggleButton.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+toggleButton.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updatePosition(input)
+    end
+end)
+
+-- Função para abrir/fechar o painel
 
 local TweenService = game:GetService("TweenService")
+
+local mainGui = guiParent:WaitForChild("StormdownnHub_Main")
+local mainFrame = mainGui:WaitForChild("MainFrame")
 
 local panelOpen = false -- começa fechado
 
