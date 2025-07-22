@@ -198,33 +198,26 @@ local panelOpen = false
 
 toggleButton.MouseButton1Click:Connect(function()
 	if panelOpen then
-	-- Fechar o painel
-	mainGui.Enabled = false
-	mainFrame.Visible = false
-	toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	panelOpen = false
-else
-	-- Abrir o painel
-	mainGui.Enabled = true
-	mainFrame.Visible = true
-	toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	panelOpen = true
-		end
+		-- FECHAR o painel
+		mainGui.Enabled = false
+		mainFrame.Visible = false
+		panelOpen = false
 
-	if panelOpen then
-	toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-else
-	toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-end
+		toggleButton.Parent = guiParent
+		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+	else
+		-- ABRIR o painel
+		mainGui.Enabled = true
+		mainFrame.Visible = true
+		panelOpen = true
 
--- Sempre mantenha o botão no guiParent para que ele continue visível
-toggleButton.Parent = guiParent
-toggleButton.Visible = true
-	toggleButton.Visible = true -- Garante que sempre aparece
+		toggleButton.Parent = mainFrame
+		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+	end
+
+	toggleButton.Visible = true
 end)
 
 -- Verificação de login
