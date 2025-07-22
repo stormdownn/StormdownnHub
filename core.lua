@@ -197,10 +197,21 @@ end)
 local panelOpen = false
 
 toggleButton.MouseButton1Click:Connect(function()
-	panelOpen = not panelOpen
-
-	mainGui.Enabled = panelOpen
-	mainFrame.Visible = panelOpen
+	if panelOpen then
+	-- Fechar o painel
+	mainGui.Enabled = false
+	mainFrame.Visible = false
+	toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+	panelOpen = false
+else
+	-- Abrir o painel
+	mainGui.Enabled = true
+	mainFrame.Visible = true
+	toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+	panelOpen = true
+		end
 
 	if panelOpen then
 	toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
