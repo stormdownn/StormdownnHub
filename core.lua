@@ -123,7 +123,7 @@ BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
 -- Ativar botão após login
 loginButton.MouseButton1Click:Connect(function()
-	if passwordBox.Text == HUB_PASSWORD then
+	if passwordBox.Text:match("^%s*(.-)%s*$") == HUB_PASSWORD then
 		loginGui:Destroy()
 		mainGui.Enabled = true
 		MainFrame.Visible = true
