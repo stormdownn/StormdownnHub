@@ -218,9 +218,14 @@ end)
 loginButton.MouseButton1Click:Connect(function()
 	if passwordBox.Text == HUB_PASSWORD then
 		loginGui:Destroy()
-		mainGui.Enabled = false
-		mainFrame.Visible = false
-		toggleButton.Visible = true
+mainGui.Enabled = true
+mainFrame.Visible = true
+panelOpen = true
+
+toggleButton.Visible = true
+toggleButton.Parent = mainFrame
+toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 	else
 		incorrectLabel.Text = "Senha incorreta!"
 		wait(1.5)
