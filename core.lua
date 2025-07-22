@@ -7,6 +7,7 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
 
 -- Remove GUIs antigas
 for _, name in pairs({"StormdownnHub_Login", "StormdownnHub_Main"}) do
