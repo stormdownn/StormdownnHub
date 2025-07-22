@@ -182,16 +182,19 @@ end)
 
 -- Validação da senha e abertura do hub
 loginButton.MouseButton1Click:Connect(function()
-	local textoDigitado = passwordBox.Text:match("^%s*(.-)%s*$")
-	if textoDigitado == HUB_PASSWORD then
-		loginGui:Destroy()
-		mainGui.Enabled = true
-		abrirPainel()
-		BotaoFlutuante.Visible = true
-	else
-		incorrectLabel.Text = "Senha incorreta!"
-		wait(1.5)
-		incorrectLabel.Text = ""
-		passwordBox.Text = ""
-	end
+    print("Botão ENTRAR clicado") -- DEBUG
+    local textoDigitado = passwordBox.Text:match("^%s*(.-)%s*$")
+    if textoDigitado == HUB_PASSWORD then
+        print("Senha correta, abrindo hub...") -- DEBUG
+        loginGui:Destroy()
+        mainGui.Enabled = true
+        abrirPainel()
+        BotaoFlutuante.Visible = true
+    else
+        print("Senha incorreta!") -- DEBUG
+        incorrectLabel.Text = "Senha incorreta!"
+        wait(1.5)
+        incorrectLabel.Text = ""
+        passwordBox.Text = ""
+    end
 end)
