@@ -69,6 +69,25 @@ incorrectLabel.TextSize = 16
 
 local HUB_PASSWORD = "stormdownn"
 
+-- LOGIN (continuação da Parte 1)
+
+loginButton.MouseButton1Click:Connect(function()
+    local typed = passwordBox.Text
+    if typed == HUB_PASSWORD then
+    incorrectLabel.Text = ""
+    loginGui:Destroy()
+    toggleButton.Visible = true
+    print("✅ Login bem-sucedido.")
+    -- mostrar botão após login
+    mainGui.Enabled = true
+    else
+        incorrectLabel.Text = "Senha incorreta!"
+        wait(1.5)
+        incorrectLabel.Text = ""
+        passwordBox.Text = ""
+    end
+end)
+
 -- =======
 -- HUB PRINCIPAL
 -- =======
@@ -88,6 +107,46 @@ mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 mainFrame.BackgroundTransparency = 0
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 14)
+-- Tornar o painel principal arrastável (mouse e touch)
+local UIS = game:GetService("UserInputService")
+local draggingMain = false
+local dragInputMain, dragStartMain, startPosMain
+
+local function updateMain(input)
+	local delta = input.Position - dragStartMain
+	mainFrame.Position = UDim2.new(
+		mainFrame.Position.X.Scale,
+		startPosMain.X.Offset + delta.X,
+		mainFrame.Position.Y.Scale,
+		startPosMain.Y.Offset + delta.Y
+	)
+end
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingMain = true
+		dragStartMain = input.Position
+		startPosMain = mainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				draggingMain = false
+			end
+		end)
+	end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInputMain = input
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if input == dragInputMain and draggingMain then
+		updateMain(input)
+	end
+end)
 
 -- Cabeçalho com texto preto
 local headerLabel = Instance.new("TextLabel", mainFrame)
@@ -194,13 +253,13 @@ toggleButton.InputBegan:Connect(function(input)
 end)
 
 toggleButton.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragInput = input
     end
 end)
 
 game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
         updatePosition(input)
     end
 end)
@@ -226,22 +285,5 @@ toggleButton.MouseButton1Click:Connect(function()
         tween:Play()
         tween.Completed:Wait()
         mainGui.Enabled = false
-    end
-end)
-
--- LOGIN (continuação da Parte 1)
-
-loginButton.MouseButton1Click:Connect(function()
-    local typed = passwordBox.Text
-    if typed == HUB_PASSWORD then
-    incorrectLabel.Text = ""
-    loginGui:Destroy()
-    toggleButton.Visible = true -- mostrar botão após login
-    mainGui.Enabled = true
-    else
-        incorrectLabel.Text = "Senha incorreta!"
-        wait(1.5)
-        incorrectLabel.Text = ""
-        passwordBox.Text = ""
     end
 end)
