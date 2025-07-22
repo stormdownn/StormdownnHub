@@ -16,13 +16,12 @@ loginGui.ResetOnSpawn = false
 -- Frame do login
 local loginFrame = Instance.new("Frame", loginGui)
 loginFrame.Name = "LoginFrame"
-loginFrame.Size = UDim2.new(0, 280, 0, 200)
-loginFrame.Position = UDim2.new(0.5, -140, 0.5, -100)
+loginFrame.Size = UDim2.new(0, 260, 0, 180)
+loginFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+loginFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
 loginFrame.BackgroundTransparency = 0.05
-loginFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-loginFrame.ClipsDescendants = true
 loginFrame.ZIndex = 2
 
 -- Cantos arredondados
@@ -31,14 +30,14 @@ corner.CornerRadius = UDim.new(0, 12)
 
 -- Boas-vindas (3 linhas centralizadas)
 local welcomeLabel = Instance.new("TextLabel", loginFrame)
-welcomeLabel.Size = UDim2.new(1, -20, 0, 80)
-welcomeLabel.Position = UDim2.new(0, 10, 0, 10)
+welcomeLabel.Size = UDim2.new(1, -20, 0, 60)
+welcomeLabel.Position = UDim2.new(0, 10, 0, 8)
 welcomeLabel.BackgroundTransparency = 1
 welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 welcomeLabel.Font = Enum.Font.GothamBlack
 welcomeLabel.TextSize = 20
 welcomeLabel.TextWrapped = true
-welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTHEO\n⚡StormdownnHub_V1⚡"
+welcomeLabel.Text = "🌩️ BEM-VINDO 🌩️\nAO\n⚡StormdownnHub_V1⚡"
 welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
 welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
 
@@ -46,14 +45,13 @@ welcomeLabel.TextYAlignment = Enum.TextYAlignment.Center
 local passwordBox = Instance.new("TextBox", loginFrame)
 passwordBox.PlaceholderText = "Digite a senha"
 passwordBox.Text = ""
-passwordBox.Size = UDim2.new(1, -40, 0, 35)
-passwordBox.Position = UDim2.new(0, 20, 0, 105)
+passwordBox.Size = UDim2.new(1, -40, 0, 30)
+passwordBox.Position = UDim2.new(0, 20, 0, 80)
 passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
 passwordBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 passwordBox.Font = Enum.Font.Gotham
-passwordBox.TextSize = 18
+passwordBox.TextSize = 16
 passwordBox.ClearTextOnFocus = false
-passwordBox.TextScaled = false
 
 local corner2 = Instance.new("UICorner", passwordBox)
 corner2.CornerRadius = UDim.new(0, 8)
@@ -61,12 +59,12 @@ corner2.CornerRadius = UDim.new(0, 8)
 -- Botão de login
 local loginButton = Instance.new("TextButton", loginFrame)
 loginButton.Text = "ENTRAR"
-loginButton.Size = UDim2.new(1, -40, 0, 35)
-loginButton.Position = UDim2.new(0, 20, 0, 150)
+loginButton.Size = UDim2.new(1, -40, 0, 30)
+loginButton.Position = UDim2.new(0, 20, 0, 125)
 loginButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 loginButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 loginButton.Font = Enum.Font.GothamBold
-loginButton.TextSize = 18
+loginButton.TextSize = 16
 
 local corner3 = Instance.new("UICorner", loginButton)
 corner3.CornerRadius = UDim.new(0, 8)
