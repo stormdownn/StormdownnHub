@@ -13,7 +13,7 @@ local player = Players.LocalPlayer
 local guiParent = player:WaitForChild("PlayerGui")
 
 --// Constantes
-local HUB_PASSWORD = "stormhub2025" -- senha
+local HUB_PASSWORD = "stormdownn" -- senha
 
 --// GUI de login
 local loginGui = Instance.new("ScreenGui", guiParent)
@@ -30,7 +30,7 @@ Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
 local title = Instance.new("TextLabel", loginFrame)
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "STORMDOWNNHUB_V1"
+title.Text = "🌩️ STORMDOWNNHUB_V1 🌩️"
 title.TextColor3 = Color3.fromRGB(0, 0, 0)
 title.Font = Enum.Font.GothamBlack
 title.TextSize = 22
