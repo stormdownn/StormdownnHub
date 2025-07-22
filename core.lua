@@ -196,13 +196,13 @@ toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 toggleButton.Text = "✦"
+toggleButton.Visible = false
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 22
 toggleButton.AutoButtonColor = false
 toggleButton.ZIndex = 100
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
-
-toggleButton.Parent = mainFrame -- começa preso ao painel
+toggleButton.Parent = guiParent -- começa preso ao painel
 
 -- Drag system para quando estiver solto
 local UserInputService = game:GetService("UserInputService")
@@ -247,31 +247,35 @@ toggleButton.MouseButton1Click:Connect(function()
     if panelOpen then
         toggleButton.Text = "Fechar"
 
-        -- Reanexar botão ao Hub
+        -- Reanexar botão ao Hub (dentro do mainFrame)
         toggleButton.Parent = mainFrame
         toggleButton.Position = UDim2.new(0.5, -25, 0, -25)
-        toggleButton.AnchorPoint = Vector2.new(0, 0)
+        toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 
         mainGui.Enabled = true
         mainFrame.Visible = true
 
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 0})
         tween:Play()
+
     else
         toggleButton.Text = "Abrir"
 
         local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
         tween:Play()
-        tween.Completed:Wait()
 
-        mainGui.Enabled = false
-        mainFrame.Visible = false
+        tween.Completed:Connect(function()
+            mainGui.Enabled = false
+            mainFrame.Visible = false
 
-        -- Reanexar botão à tela e deixar arrastável
-        toggleButton.Parent = guiParent
-        toggleButton.Position = mainFrame.Position -- pega posição do hub antes de fechar
+            -- Mover o botão de volta para a tela (fora do mainFrame)
+            toggleButton.Parent = guiParent
+            toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+            toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+        end)
     end
 end)
+
 -- LOGIN (continuação da Parte 1)
 
 loginButton.MouseButton1Click:Connect(function()
