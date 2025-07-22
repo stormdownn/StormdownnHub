@@ -194,20 +194,20 @@ end)
 
 -- Abrir e fechar o painel
 
+-- Abrir e fechar o painel
 toggleButton.MouseButton1Click:Connect(function()
 	if panelOpen then
-		-- Primeiro move o botão para fora ANTES de esconder o hub
+		-- Fechar o hub, mas manter o botão visível e arrastável
+		mainGui.Enabled = false
+		mainFrame.Visible = false
+		panelOpen = false
+
 		toggleButton.Parent = guiParent
 		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
 		toggleButton.Visible = true
-
-		-- Agora esconde o hub
-		mainGui.Enabled = false
-		mainFrame.Visible = false
-		panelOpen = false
 	else
-		-- Mostra o hub e prende o botão no topo do painel
+		-- Abrir o hub e fixar o botão no topo do painel
 		mainGui.Enabled = true
 		mainFrame.Visible = true
 		panelOpen = true
