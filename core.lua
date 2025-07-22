@@ -240,23 +240,38 @@ end
 enableDragging(toggleButton) -- já deixa a função pronta (ativa só se estiver solto)
 
 -- Controle de abrir e fechar
-local isOpen = true
 
 toggleButton.MouseButton1Click:Connect(function()
-	if isOpen then
-		mainGui.Enabled = false
-		toggleButton.Text = "Abrir"
-		toggleButton.Parent = guiParent
-		toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- posição livre
-	else
-		mainGui.Enabled = true
-		toggleButton.Text = "Fechar"
-		toggleButton.Parent = mainFrame
-		toggleButton.Position = UDim2.new(0.5, -25, 0, -30) -- volta pro topo
-	end
-	isOpen = not isOpen
-end)
+    panelOpen = not panelOpen
 
+    if panelOpen then
+        toggleButton.Text = "Fechar"
+
+        -- Reanexar botão ao Hub
+        toggleButton.Parent = mainFrame
+        toggleButton.Position = UDim2.new(0.5, -25, 0, -25)
+        toggleButton.AnchorPoint = Vector2.new(0, 0)
+
+        mainGui.Enabled = true
+        mainFrame.Visible = true
+
+        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 0})
+        tween:Play()
+    else
+        toggleButton.Text = "Abrir"
+
+        local tween = TweenService:Create(mainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad), {BackgroundTransparency = 1})
+        tween:Play()
+        tween.Completed:Wait()
+
+        mainGui.Enabled = false
+        mainFrame.Visible = false
+
+        -- Reanexar botão à tela e deixar arrastável
+        toggleButton.Parent = guiParent
+        toggleButton.Position = mainFrame.Position -- pega posição do hub antes de fechar
+    end
+end)
 -- LOGIN (continuação da Parte 1)
 
 loginButton.MouseButton1Click:Connect(function()
