@@ -195,27 +195,20 @@ end)
 -- Abrir e fechar o painel
 
 toggleButton.MouseButton1Click:Connect(function()
+	panelOpen = not panelOpen
+
+	mainGui.Enabled = panelOpen
+	mainFrame.Visible = panelOpen
+
+	-- Posicionamento do botão dependendo do estado
 	if panelOpen then
-		panelOpen = false
-
-		mainGui.Enabled = false
-		mainFrame.Visible = false
-
-		toggleButton.Parent = guiParent
-		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		toggleButton.Visible = true
-	else
-		panelOpen = true
-
-		mainGui.Enabled = true
-		mainFrame.Visible = true
-
-		toggleButton.Parent = mainFrame
 		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-		toggleButton.Visible = true
+	else
+		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 	end
+
+	toggleButton.Parent = guiParent -- Sempre fora do painel!
+	toggleButton.Visible = true
 end)
 
 -- Verificação de login
@@ -224,6 +217,10 @@ loginButton.MouseButton1Click:Connect(function()
 		loginGui:Destroy()
 		mainGui.Enabled = true
 		mainFrame.Visible = true
+			panelOpen = true
+toggleButton.Visible = true
+toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+toggleButton.Parent = guiParent
 
 		toggleButton.Visible = true
 		toggleButton.Parent = mainFrame
