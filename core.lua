@@ -27,15 +27,15 @@ loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
 Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
 
-local welcomeLabel = Instance.new("TextLabel", loginFrame)
-local welcomeLabel = Instance.new("TextLabel", loginFrame) -- ou MainFrame, depende de onde quer mostrar
-welcomeLabel.Size = UDim2.new(1, 0, 0, 50)
+local welcomeLabel = Instance.new("TextLabel", MainFrame)
+welcomeLabel.Size = UDim2.new(1, 0, 0, 70) -- altura maior para 3 linhas
 welcomeLabel.Position = UDim2.new(0, 0, 0, 10)
 welcomeLabel.BackgroundTransparency = 1
-welcomeLabel.Font = Enum.Font.GothamBold
 welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-welcomeLabel.TextSize = 20
-welcomeLabel.Text = "      🌩️ WELCOME 🌩️\n           THE ⚡StormdownnHub_V1⚡"
+welcomeLabel.Font = Enum.Font.GothamBlack
+welcomeLabel.TextSize = 22
+welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTHE\n⚡StormdownnHub_V1⚡"
+welcomeLabel.TextWrapped = true
 welcomeLabel.TextYAlignment = Enum.TextYAlignment.Top
 welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
 
@@ -100,47 +100,51 @@ Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Botão flutuante preto
+-- Criação do botão flutuante
 local BotaoFlutuante = Instance.new("TextButton")
 BotaoFlutuante.Name = "BotaoFlutuante"
 BotaoFlutuante.Size = UDim2.new(0, 40, 0, 40)
-BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5) -- posição inicial fixa no topo do painel
-BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- fundo preto
-BotaoFlutuante.TextColor3 = Color3.fromRGB(255, 255, 255) -- texto branco (pode mudar se quiser)
-BotaoFlutuante.Text = "✦" -- símbolo legal para o botão
+BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5) -- posição inicial fixada no topo do painel
+BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- cor preta
+BotaoFlutuante.TextColor3 = Color3.fromRGB(255, 255, 255)
+BotaoFlutuante.Text = "✦" -- símbolo do botão
 BotaoFlutuante.Font = Enum.Font.GothamBold
-BotaoFlutuante.TextSize = 24
+BotaoFlutuante.TextSize = 22
 BotaoFlutuante.ZIndex = 100
-BotaoFlutuante.Parent = mainGui
-BotaoFlutuante.Visible = false
 Instance.new("UICorner", BotaoFlutuante).CornerRadius = UDim.new(1, 0)
+BotaoFlutuante.Visible = false
+BotaoFlutuante.Parent = mainGui
 
--- Variável para controlar estado do painel
 local painelAberto = true
 
--- Função para abrir/fechar painel e posicionar botão
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+-- Função para fixar botão no topo do painel
+local function fixarBotaoNoPainel()
+	local novaPos = UDim2.new(0.5, -20, 0, 5)
+	TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = novaPos}):Play()
+	BotaoFlutuante.Draggable = false
+end
+
+-- Alternar painel + comportamento do botão
 local function alternarPainel()
 	painelAberto = not painelAberto
 
 	if painelAberto then
 		MainFrame.Visible = true
-		BotaoFlutuante.Draggable = false
-
-		-- Fixa o botão no topo do painel
-		local posFixada = UDim2.new(0.5, -20, 0, 5)
-		TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = posFixada}):Play()
+		-- fixar o botão no topo do painel
+		fixarBotaoNoPainel()
 	else
 		MainFrame.Visible = false
+		-- deixar o botão arrastável e livre, sem resetar posição
 		BotaoFlutuante.Draggable = true
-
-		-- Quando estiver fechado, NÃO mover a posição, só deixar arrastável
-		-- Então não muda a posição aqui, o jogador pode arrastar livremente
 	end
 end
 
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
--- Ativar botão após login
+-- Mostrar botão e painel após login
 loginButton.MouseButton1Click:Connect(function()
 	if passwordBox.Text:match("^%s*(.-)%s*$") == HUB_PASSWORD then
 		loginGui:Destroy()
@@ -149,8 +153,7 @@ loginButton.MouseButton1Click:Connect(function()
 		painelAberto = true
 
 		BotaoFlutuante.Visible = true
-		BotaoFlutuante.Draggable = false
-		BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5)
+		fixarBotaoNoPainel()
 	else
 		incorrectLabel.Text = "Senha incorreta!"
 		wait(1.5)
@@ -159,8 +162,8 @@ loginButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- Drag do botão quando o painel estiver fechado
-local dragging, dragInput, dragStart, startPos
+-- Código para arrastar o botão livremente quando o painel estiver fechado
+local dragging, dragStart, startPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
 	if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
