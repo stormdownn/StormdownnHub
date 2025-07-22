@@ -26,20 +26,23 @@ loginFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 loginFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 loginFrame.BorderSizePixel = 0
 Instance.new("UICorner", loginFrame).CornerRadius = UDim.new(0, 8)
--- Label de boas-vindas
-local welcomeLabel = Instance.new("TextLabel")
-welcomeLabel.Name = "WelcomeLabel"
-welcomeLabel.Size = UDim2.new(1, -20, 0, 70) -- largura com margem e altura fixa
-welcomeLabel.Position = UDim2.new(0, 10, 0, 10) -- margem interna do topo e da esquerda
-welcomeLabel.BackgroundTransparency = 1 -- sem fundo
-welcomeLabel.TextColor3 = Color3.fromRGB(0, 0, 0) -- preto
-welcomeLabel.Font = Enum.Font.GothamBlack
-welcomeLabel.TextSize = 22
-welcomeLabel.Text = "🌩️ WELCOME 🌩️\nTHE\n⚡StormdownnHub_V1⚡"
-welcomeLabel.TextWrapped = true
-welcomeLabel.TextYAlignment = Enum.TextYAlignment.Top
-welcomeLabel.TextXAlignment = Enum.TextXAlignment.Center
-welcomeLabel.Parent = MainFrame
+
+local testGui = Instance.new("ScreenGui", game.Players.LocalPlayer.PlayerGui)
+local testFrame = Instance.new("Frame", testGui)
+testFrame.Size = UDim2.new(0, 400, 0, 300)
+testFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+testFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+local welcome = Instance.new("TextLabel", testFrame)
+welcome.Size = UDim2.new(1, -20, 0, 80)
+welcome.Position = UDim2.new(0, 10, 0, 10)
+welcome.BackgroundTransparency = 1
+welcome.TextColor3 = Color3.fromRGB(0, 0, 0)
+welcome.Font = Enum.Font.GothamBlack
+welcome.TextSize = 20
+welcome.TextWrapped = true
+welcome.Text = "🌩️ BEM-VINDO 🌩️\nAO\n⚡StormdownnHub_V1⚡"
+welcome.TextXAlignment = Enum.TextXAlignment.Center
 
 local title = Instance.new("TextLabel", loginFrame)
 title.Size = UDim2.new(1, 0, 0, 40)
@@ -122,27 +125,31 @@ local painelAberto = true
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
--- Função para fixar botão no topo do painel
+-- Fixar o botão no topo do painel
 local function fixarBotaoNoPainel()
-	local novaPos = UDim2.new(0.5, -20, 0, 5)
-	TweenService:Create(BotaoFlutuante, TweenInfo.new(0.3), {Position = novaPos}):Play()
-	BotaoFlutuante.Draggable = false
+	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5)
+	BotaoFlutuante.AnchorPoint = Vector2.new(0, 0)
 end
 
 -- Alternar painel + comportamento do botão
+ -- Fixar o botão no topo do painel
 local function alternarPainel()
 	painelAberto = not painelAberto
 
 	if painelAberto then
 		MainFrame.Visible = true
-		-- fixar o botão no topo do painel
+		BotaoFlutuante.Parent = MainFrame
 		fixarBotaoNoPainel()
+		BotaoFlutuante.Draggable = false
 	else
 		MainFrame.Visible = false
-		-- deixar o botão arrastável e livre, sem resetar posição
+		BotaoFlutuante.Parent = mainGui
 		BotaoFlutuante.Draggable = true
 	end
 end
+
+-- Clique do botão
+BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
@@ -166,6 +173,35 @@ end)
 
 -- Código para arrastar o botão livremente quando o painel estiver fechado
 local dragging, dragStart, startPos
+
+BotaoFlutuante.InputBegan:Connect(function(input)
+	if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+		dragging = true
+		dragStart = input.Position
+		startPos = BotaoFlutuante.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		BotaoFlutuante.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+-- Sistema de arrasto
+local dragging, dragInput, dragStart, startPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
 	if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
