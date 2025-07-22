@@ -1,4 +1,4 @@
--- StormdownnHub_V1 - Login + Hub + Botão Flutuante Sincronizado
+-- StormdownnHub_V1
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-local HUB_PASSWORD = "stormdownn" -- Defina sua senha aqui
+local HUB_PASSWORD = "stormdownn" -- Senha
 
 -- ===== Tela de Login =====
 local loginGui = Instance.new("ScreenGui")
@@ -104,25 +104,54 @@ BotaoFlutuante.Parent = mainGui
 
 local painelAberto = false
 
--- Guarda a posição do botão nas duas situações
-local posAberto = UDim2.new(0.5, -20, 0, -20)  -- metade para fora no topo do painel
-local posFechado = UDim2.new(0.5, -20, 0, 5)   -- fora do painel (quando fechado)
+-- Guarda as posições relativas dos dois estados:
+local posAberto = UDim2.new(0.5, -20, 0, -20)  -- metade pra fora no topo do painel (relativo ao MainFrame)
+local posFechado = UDim2.new(0.5, -20, 0, 5)   -- fora do painel (relativo ao mainGui)
 
--- Função para abrir painel e posicionar botão
+local function atualizarPosicaoParaNovoPai(obj, novoPai)
+    local absPos = obj.AbsolutePosition
+    local parentAbsPos = novoPai.AbsolutePosition
+    local newX = absPos.X - parentAbsPos.X
+    local newY = absPos.Y - parentAbsPos.Y
+    obj.Position = UDim2.new(0, newX, 0, newY)
+    obj.Parent = novoPai
+end
+
 local function abrirPainel()
     MainFrame.Visible = true
     painelAberto = true
-    BotaoFlutuante.Parent = MainFrame
-    BotaoFlutuante.Position = posAberto
+
+    atualizarPosicaoParaNovoPai(BotaoFlutuante, MainFrame)
+
+    -- Ajusta a posição para ficar metade pra fora (topo)
+    BotaoFlutuante.Position = UDim2.new(
+        BotaoFlutuante.Position.X.Scale,
+        BotaoFlutuante.Position.X.Offset,
+        0,
+        -BotaoFlutuante.Size.Y.Offset / 2
+    )
+
+    posAberto = BotaoFlutuante.Position
+
     BotaoFlutuante.Draggable = false
 end
 
--- Função para fechar painel e posicionar botão
 local function fecharPainel()
     MainFrame.Visible = false
     painelAberto = false
-    BotaoFlutuante.Parent = mainGui
-    BotaoFlutuante.Position = posFechado
+
+    atualizarPosicaoParaNovoPai(BotaoFlutuante, mainGui)
+
+    -- Ajusta a posição para ficar metade pra fora (fora do painel)
+    BotaoFlutuante.Position = UDim2.new(
+        BotaoFlutuante.Position.X.Scale,
+        BotaoFlutuante.Position.X.Offset,
+        0,
+        5
+    )
+
+    posFechado = BotaoFlutuante.Position
+
     BotaoFlutuante.Draggable = true
 end
 
@@ -136,20 +165,20 @@ end
 
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
--- Arrasto do botão quando painel fechado
 local dragging = false
-local dragStart = nil
-local startPos = nil
+local dragStartInput
+local dragStartPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
     if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
         dragging = true
-        dragStart = input.Position
-        startPos = BotaoFlutuante.Position
+        dragStartInput = input.Position
+        dragStartPos = BotaoFlutuante.Position
 
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
+                -- Atualiza posição fechada para a posição atual quando parar de arrastar
                 posFechado = BotaoFlutuante.Position
             end
         end)
@@ -158,14 +187,13 @@ end)
 
 UserInputService.InputChanged:Connect(function(input)
     if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - dragStart
+        local delta = input.Position - dragStartInput
         BotaoFlutuante.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
+            dragStartPos.X.Scale,
+            dragStartPos.X.Offset + delta.X,
+            dragStartPos.Y.Scale,
+            dragStartPos.Y.Offset + delta.Y
         )
-        posFechado = BotaoFlutuante.Position
     end
 end)
 
