@@ -198,16 +198,17 @@ local panelOpen = false
 
 toggleButton.MouseButton1Click:Connect(function()
 	if panelOpen then
-		-- FECHAR o painel
+		-- FECHAR o painel, mas manter o botão visível e arrastável
 		mainGui.Enabled = false
 		mainFrame.Visible = false
 		panelOpen = false
 
-		toggleButton.Parent = guiParent
+		toggleButton.Parent = guiParent -- agora volta para fora do painel
 		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+		toggleButton.Visible = true
 	else
-		-- ABRIR o painel
+		-- ABRIR o painel e prender o botão ao topo dele
 		mainGui.Enabled = true
 		mainFrame.Visible = true
 		panelOpen = true
@@ -215,9 +216,8 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleButton.Parent = mainFrame
 		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
 		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+		toggleButton.Visible = true
 	end
-
-	toggleButton.Visible = true
 end)
 
 -- Verificação de login
