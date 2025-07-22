@@ -201,7 +201,7 @@ toggleButton.TextSize = 18
 toggleButton.AutoButtonColor = false
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(1, 0)
 toggleButton.ZIndex = 100
-toggleButton.Parent = guiParent
+toggleButton.Parent = mainGui
 toggleButton.Visible = false
 
 -- Tornar botão arrastável
