@@ -284,9 +284,13 @@ loginButton.MouseButton1Click:Connect(function()
     incorrectLabel.Text = ""
     loginGui:Destroy()
     toggleButton.Visible = true
-    print("✅ Login bem-sucedido.")
-    -- mostrar botão após login
-    mainGui.Enabled = true
+toggleButton.Parent = guiParent -- Mover o botão para a tela
+toggleButton.Position = UDim2.new(0.5, -25, 0, 10) -- posição flutuante no topo
+toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+
+print("✅ Login bem-sucedido.")
+mainGui.Enabled = false -- o hub ainda está fechado
+mainFrame.Visible = false
     else
         incorrectLabel.Text = "Senha incorreta!"
         wait(1.5)
