@@ -203,15 +203,16 @@ toggleButton.MouseButton1Click:Connect(function()
 	mainFrame.Visible = panelOpen
 
 	if panelOpen then
-		toggleButton.Parent = mainFrame
-		toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
-		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	else
-		toggleButton.Parent = guiParent
-		toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
-		toggleButton.AnchorPoint = Vector2.new(0.5, 0)
-	end
+	toggleButton.Position = UDim2.new(0.5, -25, 0, -30)
+	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+else
+	toggleButton.Position = UDim2.new(0.5, -25, 0, 10)
+	toggleButton.AnchorPoint = Vector2.new(0.5, 0)
+end
 
+-- Sempre mantenha o botão no guiParent para que ele continue visível
+toggleButton.Parent = guiParent
+toggleButton.Visible = true
 	toggleButton.Visible = true -- Garante que sempre aparece
 end)
 
