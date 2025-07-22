@@ -1,4 +1,4 @@
--- StormdownnHub_V1
+-- StormdownnHub_V1 - Login + Hub + Botão Flutuante Sincronizado
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
@@ -8,7 +8,7 @@ local playerGui = player:WaitForChild("PlayerGui")
 
 local HUB_PASSWORD = "stormdownn" -- Defina sua senha aqui
 
--- Tela de Login
+-- ===== Tela de Login =====
 local loginGui = Instance.new("ScreenGui")
 loginGui.Name = "StormdownnLogin"
 loginGui.ResetOnSpawn = false
@@ -42,7 +42,7 @@ passwordBox.PlaceholderText = "Digite a senha"
 passwordBox.Size = UDim2.new(0.85, 0, 0, 40)
 passwordBox.Position = UDim2.new(0.5, -150, 0.55, -20)
 passwordBox.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
-passwordBox.TextColor3 = Color3.fromRGB(80, 80, 80)
+passwordBox.TextColor3 = Color3.fromRGB(120, 120, 120)
 passwordBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
 passwordBox.Font = Enum.Font.Gotham
 passwordBox.TextSize = 16
@@ -72,7 +72,7 @@ incorrectLabel.TextSize = 14
 incorrectLabel.Text = ""
 incorrectLabel.TextWrapped = true
 
--- Interface principal (Hub)
+-- ===== Interface do Hub =====
 local mainGui = Instance.new("ScreenGui", playerGui)
 mainGui.Name = "StormdownnHub"
 mainGui.ResetOnSpawn = false
@@ -103,19 +103,21 @@ BotaoFlutuante.Visible = false
 BotaoFlutuante.Parent = mainGui
 
 local painelAberto = false
-local posFechado = UDim2.new(0.5, -20, 0, 5)
 
--- Funções para abrir e fechar painel mantendo posição do botão
+-- Guarda a posição do botão nas duas situações
+local posAberto = UDim2.new(0.5, -20, 0, -20)  -- metade para fora no topo do painel
+local posFechado = UDim2.new(0.5, -20, 0, 5)   -- fora do painel (quando fechado)
 
+-- Função para abrir painel e posicionar botão
 local function abrirPainel()
     MainFrame.Visible = true
     painelAberto = true
     BotaoFlutuante.Parent = MainFrame
-    -- Posicionar o botão 50% para fora do topo do painel (metade dentro, metade fora)
-    BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20)
+    BotaoFlutuante.Position = posAberto
     BotaoFlutuante.Draggable = false
 end
 
+-- Função para fechar painel e posicionar botão
 local function fecharPainel()
     MainFrame.Visible = false
     painelAberto = false
@@ -134,9 +136,10 @@ end
 
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
--- Drag para botão quando hub fechado
+-- Arrasto do botão quando painel fechado
 local dragging = false
-local dragStart, startPos
+local dragStart = nil
+local startPos = nil
 
 BotaoFlutuante.InputBegan:Connect(function(input)
     if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
@@ -162,6 +165,7 @@ UserInputService.InputChanged:Connect(function(input)
             startPos.Y.Scale,
             startPos.Y.Offset + delta.Y
         )
+        posFechado = BotaoFlutuante.Position
     end
 end)
 
