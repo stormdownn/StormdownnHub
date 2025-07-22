@@ -132,7 +132,13 @@ loginButton.MouseButton1Click:Connect(function()
 		painelAberto = true
 
 		BotaoFlutuante.Visible = true
-		BotaoFlutuante.Parent = MainFrame
+if painelAberto then
+    BotaoFlutuante.Parent = MainFrame
+    BotaoFlutuante.Draggable = false
+else
+    BotaoFlutuante.Parent = mainGui
+    BotaoFlutuante.Draggable = true
+			end
 	else
 		incorrectLabel.Text = "Senha incorreta!"
 		wait(1.5)
