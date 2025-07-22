@@ -88,11 +88,11 @@ Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Botão flutuante
+-- Criação do botão flutuante
 local BotaoFlutuante = Instance.new("TextButton")
 BotaoFlutuante.Name = "BotaoFlutuante"
 BotaoFlutuante.Size = UDim2.new(0, 40, 0, 40)
-BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5)
+BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, -20) -- 50% fora, 50% dentro
 BotaoFlutuante.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 BotaoFlutuante.TextColor3 = Color3.fromRGB(255, 255, 255)
 BotaoFlutuante.Text = "✦"
@@ -104,20 +104,14 @@ BotaoFlutuante.Visible = false
 BotaoFlutuante.Parent = mainGui
 
 local painelAberto = true
-local UserInputService = game:GetService("UserInputService")
 
-local function fixarBotaoNoPainel()
-	BotaoFlutuante.Position = UDim2.new(0.5, -20, 0, 5)
-	BotaoFlutuante.AnchorPoint = Vector2.new(0, 0)
-end
-
+-- Alternar painel + comportamento do botão
 local function alternarPainel()
 	painelAberto = not painelAberto
 
 	if painelAberto then
 		MainFrame.Visible = true
 		BotaoFlutuante.Parent = MainFrame
-		fixarBotaoNoPainel()
 		BotaoFlutuante.Draggable = false
 	else
 		MainFrame.Visible = false
@@ -129,25 +123,26 @@ end
 -- Clique do botão
 BotaoFlutuante.MouseButton1Click:Connect(alternarPainel)
 
--- Login e ativação do Hub
+-- Mostrar botão e painel após login
 loginButton.MouseButton1Click:Connect(function()
-	if passwordBox.Text == senhaCorreta then
+	if passwordBox.Text:match("^%s*(.-)%s*$") == HUB_PASSWORD then
 		loginGui:Destroy()
 		mainGui.Enabled = true
 		MainFrame.Visible = true
 		painelAberto = true
 
 		BotaoFlutuante.Visible = true
-		fixarBotaoNoPainel()
+		BotaoFlutuante.Parent = MainFrame
 	else
+		incorrectLabel.Text = "Senha incorreta!"
+		wait(1.5)
+		incorrectLabel.Text = ""
 		passwordBox.Text = ""
-		passwordBox.PlaceholderText = "Senha incorreta!"
 	end
 end)
 
--- Arrasto do botão flutuante quando fechado
-local dragging = false
-local dragStart, startPos
+-- Código para arrastar o botão quando o painel estiver fechado
+local dragging, dragStart, startPos
 
 BotaoFlutuante.InputBegan:Connect(function(input)
 	if not painelAberto and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
